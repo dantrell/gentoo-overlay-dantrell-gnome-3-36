@@ -67,6 +67,7 @@ COMMON_DEPEND="
 	>=x11-libs/colord-gtk-0.1.24
 	net-libs/libsoup:2.4
 	media-libs/fontconfig
+	>=sys-fs/udisks-2.8.0
 	gnome-base/libgtop:2=
 	app-crypt/libsecret
 	>=media-libs/libcanberra-0.13[gtk3]
