@@ -1,0 +1,44 @@
+diff '--exclude=.git' -urN a/meson.build b/meson.build
+--- a/meson.build	2020-03-20 06:22:45.000000000 -0500
++++ b/meson.build	2020-03-22 03:43:18.865148927 -0500
+@@ -63,7 +63,8 @@
+ 
+ libgd_dep = libgd_subproject.get_variable('libgd_dep')
+ 
+-gspell_dep = dependency('gspell-1', version: '>= 1.0', required: true)
++with_gspell = get_option('spell')
++gspell_dep = dependency('gspell-1', version: '>= 1.0', required: false)
+ x11_dep = dependency('x11', required: false)
+ 
+ introspection_dep = dependency('gobject-introspection-1.0', required: false)
+@@ -154,6 +155,7 @@
+   '        User documentation:    @0@'.format(get_option('user_documentation')),
+   '        GObject Introspection: @0@'.format(generate_gir),
+   '        Vala API:              @0@'.format(generate_vapi),
++  '           Spell:              @0@'.format(with_gspell),
+   '',
+ ]
+ message('\n'.join(summary))
+diff '--exclude=.git' -urN a/meson_options.txt b/meson_options.txt
+--- a/meson_options.txt	2020-03-20 06:22:45.000000000 -0500
++++ b/meson_options.txt	2020-03-22 03:41:51.939550826 -0500
+@@ -14,3 +14,7 @@
+ option('user_documentation',
+        type: 'boolean', value: true,
+        description: 'Build user documentation')
++
++option('spell',
++       type:'boolean', value: true,
++       description: 'Build spell support')
+diff '--exclude=.git' -urN a/plugins/meson.build b/plugins/meson.build
+--- a/plugins/meson.build	2020-03-20 06:22:45.000000000 -0500
++++ b/plugins/meson.build	2020-03-22 03:41:10.115743798 -0500
+@@ -28,5 +28,7 @@
+ subdir('quickopen')
+ subdir('snippets')
+ subdir('sort')
+-subdir('spell')
++if with_gspell
++  subdir('spell')
++endif
+ subdir('time')

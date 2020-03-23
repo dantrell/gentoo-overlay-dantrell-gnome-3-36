@@ -1,0 +1,12 @@
+diff '--exclude=.git' -urN a/data/org.gnome.shell.gschema.xml.in b/data/org.gnome.shell.gschema.xml.in
+--- a/data/org.gnome.shell.gschema.xml.in	2020-03-07 16:30:41.000000000 -0600
++++ b/data/org.gnome.shell.gschema.xml.in	2020-03-22 04:50:37.524107493 -0500
+@@ -50,7 +50,7 @@
+       </description>
+     </key>
+     <key name="favorite-apps" type="as">
+-      <default>[ 'org.gnome.Epiphany.desktop', 'org.gnome.Geary.desktop', 'org.gnome.Calendar.desktop', 'org.gnome.Music.desktop', 'org.gnome.Photos.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Software.desktop' ]</default>
++      <default>[ 'org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'chromium-browser-chromium.desktop', 'firefox.desktop', 'firefox-bin.desktop', 'evolution.desktop', 'pidgin.desktop', 'libreoffice-writer.desktop', 'rhythmbox.desktop', 'shotwell.desktop' ]</default>
+       <summary>List of desktop file IDs for favorite applications</summary>
+       <description>
+         The applications corresponding to these identifiers
