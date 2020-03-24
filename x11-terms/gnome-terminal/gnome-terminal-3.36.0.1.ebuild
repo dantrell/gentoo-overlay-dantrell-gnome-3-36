@@ -49,25 +49,29 @@ src_prepare() {
 
 	if use deprecated-transparency; then
 		# From Fedora:
-		# 	https://src.fedoraproject.org/rpms/gnome-terminal/tree/f31
+		# 	https://src.fedoraproject.org/rpms/gnome-terminal/tree/f32
 		eapply "${FILESDIR}"/${PN}-3.28.1-build-dont-treat-warnings-as-errors.patch
 		eapply "${FILESDIR}"/${PN}-3.36.0-open-title-transparency.patch
 
 		# From GNOME:
 		# 	https://gitlab.gnome.org/GNOME/gnome-terminal/commit/b3c270b3612acd45f309521cf1167e1abd561c09
 		eapply "${FILESDIR}"/${PN}-3.14.3-fix-broken-transparency-on-startup.patch
+
+		if ! use vanilla-notify; then
+			# From Fedora:
+			# 	https://src.fedoraproject.org/rpms/gnome-terminal/tree/f32
+			eapply "${FILESDIR}"/${PN}-3.36.0-notify-rebased.patch
+		fi
+	elif ! use vanilla-notify; then
+		# From Fedora:
+		# 	https://src.fedoraproject.org/rpms/gnome-terminal/tree/f32
+		eapply "${FILESDIR}"/${PN}-3.36.0-notify.patch
 	fi
 
 	if ! use vanilla-hotkeys; then
 		# From Funtoo:
 		# 	https://bugs.funtoo.org/browse/FL-1652
 		eapply "${FILESDIR}"/${PN}-3.28.1-disable-function-keys.patch
-	fi
-
-	if ! use vanilla-notify; then
-		# From Fedora:
-		# 	https://src.fedoraproject.org/rpms/gnome-terminal/tree/f31
-		eapply "${FILESDIR}"/${PN}-3.36.0-notify.patch
 	fi
 
 	eautoreconf

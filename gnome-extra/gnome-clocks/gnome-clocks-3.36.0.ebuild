@@ -20,6 +20,7 @@ RDEPEND="
 	>=media-libs/gsound-0.98
 	>=sci-geosciences/geocode-glib-1
 	>=app-misc/geoclue-2.4:2.0
+	>=gui-libs/libhandy-0.0.10:0.0=
 	>=x11-libs/gtk+-3.20:3
 "
 DEPEND="${RDEPEND}"
