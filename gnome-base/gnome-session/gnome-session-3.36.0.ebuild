@@ -11,11 +11,12 @@ LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="*"
 
-IUSE="consolekit doc elogind gconf systemd wayland"
+IUSE="consolekit doc elogind gconf systemd user-session wayland"
 # There is a null backend available, thus ?? not ^^
 # consolekit can be enabled alone, or together with a logind provider; in latter case CK is used as fallback
 REQUIRED_USE="
 	?? ( consolekit elogind systemd )
+	user-session? ( systemd )
 	wayland? ( || ( elogind systemd ) )
 "
 
@@ -96,7 +97,7 @@ src_configure() {
 		$(meson_use elogind)
 		-Dsession_selector=true # gnome-custom-session
 		$(meson_use systemd)
-		-Dsystemd_session=disable
+		-Dsystemd_session=$(usex user-session default disable)
 		$(meson_use systemd systemd_journal)
 		$(meson_use consolekit)
 		$(meson_use doc docbook)
