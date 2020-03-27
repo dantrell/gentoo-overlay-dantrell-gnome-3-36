@@ -16,9 +16,9 @@ IUSE="+gnome +libproxy +ssl test"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
-	>=dev-libs/glib-2.60.0:2[${MULTILIB_USEDEP}]
+	>=dev-libs/glib-2.63.0:2[${MULTILIB_USEDEP}]
 	libproxy? ( >=net-libs/libproxy-0.4.11-r1:=[${MULTILIB_USEDEP}] )
-	>=net-libs/gnutls-3.4.6:=[${MULTILIB_USEDEP}]
+	>=net-libs/gnutls-3.6.5:=[${MULTILIB_USEDEP}]
 	ssl? ( app-misc/ca-certificates )
 	gnome? ( gnome-base/gsettings-desktop-schemas )
 "
