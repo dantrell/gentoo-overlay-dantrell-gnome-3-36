@@ -9,7 +9,7 @@ HOMEPAGE="https://gitlab.gnome.org/GNOME/mutter"
 
 LICENSE="GPL-2+"
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="~*"
 
 IUSE="ck debug deprecated-background elogind input_devices_wacom +introspection screencast systemd test +udev +vanilla-mipmapping wayland"
 REQUIRED_USE="
@@ -105,6 +105,22 @@ src_prepare() {
 		# 	https://gitlab.gnome.org/GNOME/mutter/merge_requests/817
 		eapply "${FILESDIR}"/${PN}-3.34.1-fix-without-gdkwayland.patch
 	fi
+
+	# From GNOME:
+	# 	https://gitlab.gnome.org/GNOME/mutter/commit/82f3bdd14e0081dff60e9fed51376fc4cbf8b201
+	# 	https://gitlab.gnome.org/GNOME/mutter/commit/95c1baf3d18fe8e50de402b7af4c29d9ae993d19
+	# 	https://gitlab.gnome.org/GNOME/mutter/commit/e3b2b90c72f72f9bf4a99add15829bf275fbe1a7
+	# 	https://gitlab.gnome.org/GNOME/mutter/commit/e339a57ddf87de42e8171a935a7617cd2acf7ef6
+	# 	https://gitlab.gnome.org/GNOME/mutter/commit/7e94311e2eb78c5fbaf8df047bebc92bd501aeb8
+	# 	https://gitlab.gnome.org/GNOME/mutter/commit/7baabc7ed0105dbf457fffe48250919849623254
+	# 	https://gitlab.gnome.org/GNOME/mutter/commit/3b2f6ae93d77d2e58451c348ce3189a6b61be41e
+	eapply "${FILESDIR}"/${PN}-3.36.2-clutter-actor-fix-pick-when-actor-is-not-allocated.patch
+	eapply "${FILESDIR}"/${PN}-3.36.2-clutter-click-action-do-not-process-captured-event-if-action-is-disabled.patch
+	eapply "${FILESDIR}"/${PN}-3.36.2-cogl-dont-allow-creating-sized-textures-with-0-pixels.patch
+	eapply "${FILESDIR}"/${PN}-3.36.2-cogl-defend-against-empty-or-unallocated-framebuffers.patch
+	eapply "${FILESDIR}"/${PN}-3.36.2-window-actor-set-viewport-when-blitting-to-screencast-fb.patch
+	eapply "${FILESDIR}"/${PN}-3.36.2-x11-fix-compilation-if-libwacom-false.patch
+	eapply "${FILESDIR}"/${PN}-3.36.2-backends-x11-fix-access-to-wacomdevice.patch
 
 	gnome2_src_prepare
 }

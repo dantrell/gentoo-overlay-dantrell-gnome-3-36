@@ -5,8 +5,4 @@
 	<email>gnome@gentoo.org</email>
 	<name>Gentoo GNOME Desktop</name>
 </maintainer>
-<use>
-	<flag name="gnome">Use <pkg>gnome-base/gnome-control-center</pkg>
-		to set GNOME online accounts preferences</flag>
-</use>
 </pkgmetadata>

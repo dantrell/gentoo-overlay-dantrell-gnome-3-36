@@ -31,7 +31,7 @@ RDEPEND="
 	>=gnome-extra/gnome-search-tool-3.6
 	>=gnome-extra/gnome-system-monitor-3.32.0
 	>=gnome-extra/gnome-tweaks-3.33.0
-	>=gnome-extra/gnome-weather-3.33.0
+	>=gnome-extra/gnome-weather-${PV}
 	>=gnome-extra/gucharmap-11.0.0:2.90
 	>=gnome-extra/nautilus-sendto-3.8.5
 	>=gnome-extra/sushi-3.34.0
@@ -92,7 +92,7 @@ RDEPEND="
 	share? ( >=gnome-extra/gnome-user-share-3.34.0 )
 	shotwell? ( >=media-gfx/shotwell-0.24 )
 	simple-scan? ( >=media-gfx/simple-scan-${PV} )
-	todo? ( >=gnome-extra/gnome-todo-3.28 )
+	todo? ( >=app-office/gnome-todo-3.28 )
 	tracker? (
 		>=app-misc/tracker-2
 		>=app-misc/tracker-miners-2

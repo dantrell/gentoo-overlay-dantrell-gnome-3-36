@@ -1,0 +1,1650 @@
+diff '--exclude=.git' -urN a/configure.ac b/configure.ac
+--- a/configure.ac	2020-03-27 17:49:41.000000000 -0500
++++ b/configure.ac	2020-04-08 20:43:47.214745521 -0500
+@@ -37,9 +37,9 @@
+ 
+ AX_PTHREAD([],[AC_MSG_ERROR([pthreads are required])])
+ 
+-GLIB_REQUIRED=2.50.0
+-GLIB_MIN_REQUIRED=2.50
+-GLIB_MAX_ALLOWED=2.50
++GLIB_REQUIRED=2.52.0
++GLIB_MIN_REQUIRED=2.52
++GLIB_MAX_ALLOWED=2.52
+ 
+ GIO_REQUIRED=2.34.0
+ GIO_UNIX_REQUIRED=2.34.0
+diff '--exclude=.git' -urN a/src/org.gnome.Terminal.gschema.xml b/src/org.gnome.Terminal.gschema.xml
+--- a/src/org.gnome.Terminal.gschema.xml	2020-04-08 20:43:35.284796377 -0500
++++ b/src/org.gnome.Terminal.gschema.xml	2020-04-08 20:43:47.219745499 -0500
+@@ -24,6 +24,13 @@
+ -->
+ <schemalist gettext-domain="gnome-terminal">
+ 
++  <enum id='org.gnome.Terminal.TitleMode'>
++    <value nick='replace' value='0'/>
++    <value nick='before' value='1'/>
++    <value nick='after' value='2'/>
++    <value nick='ignore' value='3'/>
++  </enum>
++
+    <enum id='org.gnome.Terminal.NewTerminalMode'>
+     <value nick='window' value='0'/>
+     <value nick='tab' value='1'/>
+@@ -204,6 +211,16 @@
+       <summary>Whether to perform Arabic shaping</summary>
+       <description>If true, shape Arabic text.</description>
+     </key>
++    <key name="title-mode" enum="org.gnome.Terminal.TitleMode">
++      <default>'replace'</default>
++      <summary>What to do with dynamic title</summary>
++      <description>If the application in the terminal sets the title (most typically people have their shell set up to do this), the dynamically-set title can erase the configured title, go before it, go after it, or replace it. The possible values are "replace", "before", "after", and "ignore".</description>
++    </key>
++    <key name="title" type="s">
++      <default l10n="messages" context="title">'Terminal'</default>
++      <summary>Title for terminal</summary>
++      <description>Title to display for the terminal window or tab. This title may be replaced by or combined with the title set by the application inside the terminal, depending on the title_mode setting.</description>
++    </key>
+     <key name="bold-is-bright" type="b">
+       <default>false</default>
+       <summary>Whether bold is also bright</summary>
+@@ -253,6 +270,11 @@
+       <summary>Whether to scroll to the bottom when there’s new output</summary>
+       <description>If true, whenever there’s new output the terminal will scroll to the bottom.</description>
+     </key>
++    <key name="show-foreground-process-in-title" type="b">
++      <default>true</default>
++      <summary>Whether to show the current foreground process in the title</summary>
++      <description>If true, the current foreground process will be shown in the window and tab titles.</description>
++    </key>
+     <key name="exit-action" enum="org.gnome.Terminal.ExitAction">
+       <default>'close'</default>
+       <summary>What to do with the terminal when the child command exits</summary>
+@@ -419,6 +441,10 @@
+       <default>'disabled'</default>
+       <summary>Keyboard shortcut to toggle the read-only state</summary>
+     </key>
++    <key name="set-terminal-title" type="s">
++      <default>'disabled'</default>
++      <summary>Keyboard shortcut to set the terminal title</summary>
++    </key>
+     <key name="reset" type="s">
+       <default>'disabled'</default>
+       <summary>Keyboard shortcut to reset the terminal</summary>
+diff '--exclude=.git' -urN a/src/preferences.ui b/src/preferences.ui
+--- a/src/preferences.ui	2020-04-08 20:43:35.284796377 -0500
++++ b/src/preferences.ui	2020-04-08 20:43:47.218745504 -0500
+@@ -1962,129 +1962,277 @@
+                             <property name="visible">True</property>
+                             <property name="can_focus">False</property>
+                             <property name="border_width">12</property>
+-                            <property name="column_spacing">12</property>
+-                            <property name="row_spacing">6</property>
++                            <property name="row_spacing">18</property>
+                             <child>
+-                              <object class="GtkCheckButton" id="login-shell-checkbutton">
+-                                <property name="label" translatable="yes">_Run command as a login shell</property>
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">True</property>
+-                                <property name="receives_default">False</property>
+-                                <property name="use_underline">True</property>
+-                                <property name="draw_indicator">True</property>
+-                              </object>
+-                              <packing>
+-                                <property name="top_attach">0</property>
+-                                <property name="left_attach">0</property>
+-                                <property name="width">2</property>
+-                              </packing>
+-                            </child>
+-                            <child>
+-                              <object class="GtkCheckButton" id="use-custom-command-checkbutton">
+-                                <property name="label" translatable="yes">Ru_n a custom command instead of my shell</property>
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">True</property>
+-                                <property name="receives_default">False</property>
+-                                <property name="use_underline">True</property>
+-                                <property name="draw_indicator">True</property>
+-                              </object>
+-                              <packing>
+-                                <property name="top_attach">1</property>
+-                                <property name="left_attach">0</property>
+-                                <property name="width">2</property>
+-                              </packing>
+-                            </child>
+-                            <child>
+-                              <object class="GtkLabel" id="custom-command-entry-label">
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">False</property>
+-                                <property name="label" translatable="yes">Custom co_mmand:</property>
+-                                <property name="use_underline">True</property>
+-                                <property name="mnemonic_widget">custom-command-entry</property>
+-                                <property name="xalign">0</property>
+-                              </object>
+-                              <packing>
+-                                <property name="top_attach">2</property>
+-                                <property name="left_attach">0</property>
+-                              </packing>
+-                            </child>
+-                            <child>
+-                              <object class="GtkEntry" id="custom-command-entry">
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">True</property>
+-                                <property name="hexpand">True</property>
+-                                <property name="input_hints">GTK_INPUT_HINT_NO_EMOJI</property>
+-                              </object>
+-                              <packing>
+-                                <property name="top_attach">2</property>
+-                                <property name="left_attach">1</property>
+-                              </packing>
+-                            </child>
+-                            <child>
+-                              <object class="GtkLabel" id="preserve-working-directory-checkbutton-label">
++                              <object class="GtkGrid">
+                                 <property name="visible">True</property>
+                                 <property name="can_focus">False</property>
+-                                <property name="label" translatable="yes">_Preserve working directory:</property>
+-                                <property name="use_underline">True</property>
+-                                <property name="justify">center</property>
+-                                <property name="mnemonic_widget">preserve-working-directory-combobox</property>
+-                                <property name="xalign">0</property>
+-                              </object>
+-                              <packing>
+-                                <property name="top_attach">3</property>
+-                                <property name="left_attach">0</property>
+-                              </packing>
+-                            </child>
+-                            <child>
+-                              <object class="GtkComboBox" id="preserve-working-directory-combobox">
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">False</property>
+-                                <property name="model">preserve-working-directory-model</property>
+-                                <property name="focus_on_click">False</property>
+-                                <property name="halign">start</property>
++                                <property name="row_spacing">6</property>
+                                 <child>
+-                                  <object class="GtkCellRendererText" id="preserve-working-directory-renderer"/>
+-                                  <attributes>
+-                                    <attribute name="text">0</attribute>
+-                                  </attributes>
++                                  <object class="GtkLabel">
++                                    <property name="visible">True</property>
++                                    <property name="can_focus">False</property>
++                                    <property name="xalign">0</property>
++                                    <property name="label" translatable="yes">Title</property>
++                                    <attributes>
++                                      <attribute name="weight" value="bold"/>
++                                    </attributes>
++                                  </object>
++                                  <packing>
++                                    <property name="top_attach">0</property>
++                                    <property name="left_attach">0</property>
++                                  </packing>
++                                </child>
++                                <child>
++                                  <object class="GtkAlignment">
++                                    <property name="visible">True</property>
++                                    <property name="can_focus">False</property>
++                                    <property name="left_padding">12</property>
++                                    <child>
++                                      <object class="GtkGrid">
++                                        <property name="visible">True</property>
++                                        <property name="can_focus">False</property>
++                                        <property name="column_spacing">12</property>
++                                        <property name="row_spacing">6</property>
++                                        <child>
++                                          <object class="GtkLabel" id="title-entry-label">
++                                            <property name="visible">True</property>
++                                            <property name="can_focus">False</property>
++                                            <property name="xalign">0</property>
++                                            <property name="label" translatable="yes">Initial _title:</property>
++                                            <property name="use_underline">True</property>
++                                            <property name="mnemonic_widget">title-entry</property>
++                                          </object>
++                                          <packing>
++                                            <property name="top_attach">0</property>
++                                            <property name="left_attach">0</property>
++                                          </packing>
++                                        </child>
++                                        <child>
++                                          <object class="GtkEntry" id="title-entry">
++                                            <property name="visible">True</property>
++                                            <property name="can_focus">True</property>
++                                            <property name="hexpand">True</property>
++                                          </object>
++                                          <packing>
++                                            <property name="top_attach">0</property>
++                                            <property name="left_attach">1</property>
++                                          </packing>
++                                        </child>
++                                        <child>
++                                          <object class="GtkLabel" id="title-mode-combobox-label">
++                                            <property name="visible">True</property>
++                                            <property name="can_focus">False</property>
++                                            <property name="xalign">0</property>
++                                            <property name="label" translatable="yes">When terminal commands set their o_wn titles:</property>
++                                            <property name="use_underline">True</property>
++                                            <property name="mnemonic_widget">title-mode-combobox</property>
++                                          </object>
++                                          <packing>
++                                            <property name="top_attach">1</property>
++                                            <property name="left_attach">0</property>
++                                          </packing>
++                                        </child>
++                                        <child>
++                                          <object class="GtkComboBox" id="title-mode-combobox">
++                                            <property name="visible">True</property>
++                                            <property name="can_focus">False</property>
++                                            <property name="model">model2</property>
++                                            <child>
++                                              <object class="GtkCellRendererText"/>
++                                              <attributes>
++                                                <attribute name="text">0</attribute>
++                                              </attributes>
++                                            </child>
++                                          </object>
++                                          <packing>
++                                            <property name="top_attach">1</property>
++                                            <property name="left_attach">1</property>
++                                          </packing>
++                                        </child>
++                                      </object>
++                                    </child>
++                                  </object>
++                                  <packing>
++                                    <property name="top_attach">1</property>
++                                    <property name="left_attach">0</property>
++                                    <property name="width">3</property>
++                                  </packing>
+                                 </child>
+                               </object>
+                               <packing>
+-                                <property name="top_attach">3</property>
+-                                <property name="left_attach">1</property>
+-                              </packing>
+-                            </child>
+-                            <child>
+-                              <object class="GtkLabel" id="exit-action-combobox-label">
+-                                <property name="visible">True</property>
+-                                <property name="can_focus">False</property>
+-                                <property name="label" translatable="yes">When command _exits:</property>
+-                                <property name="use_underline">True</property>
+-                                <property name="mnemonic_widget">exit-action-combobox</property>
+-                                <property name="xalign">0</property>
+-                              </object>
+-                              <packing>
+-                                <property name="top_attach">4</property>
++                                <property name="top_attach">0</property>
+                                 <property name="left_attach">0</property>
+                               </packing>
+                             </child>
+                             <child>
+-                              <object class="GtkComboBox" id="exit-action-combobox">
++                              <object class="GtkGrid">
+                                 <property name="visible">True</property>
+                                 <property name="can_focus">False</property>
+-                                <property name="model">model3</property>
+-                                <property name="focus_on_click">False</property>
+-                                <property name="halign">start</property>
++                                <property name="column_spacing">12</property>
++                                <property name="row_spacing">6</property>
++                                <child>
++                                  <object class="GtkLabel">
++                                    <property name="visible">True</property>
++                                    <property name="can_focus">False</property>
++                                    <property name="xalign">0</property>
++                                    <property name="label" translatable="yes">Command</property>
++                                    <attributes>
++                                      <attribute name="weight" value="bold"/>
++                                    </attributes>
++                                  </object>
++                                  <packing>
++                                    <property name="top_attach">0</property>
++                                    <property name="left_attach">0</property>
++                                  </packing>
++                                </child>
+                                 <child>
+-                                  <object class="GtkCellRendererText" id="renderer3"/>
+-                                  <attributes>
+-                                    <attribute name="text">0</attribute>
+-                                  </attributes>
++                                  <object class="GtkAlignment">
++                                    <property name="visible">True</property>
++                                    <property name="can_focus">False</property>
++                                    <property name="left_padding">12</property>
++                                    <child>
++                                      <object class="GtkGrid">
++                                        <property name="visible">True</property>
++                                        <property name="can_focus">False</property>
++                                        <property name="column_spacing">12</property>
++                                        <property name="row_spacing">6</property>
++                                        <child>
++                                          <object class="GtkCheckButton" id="login-shell-checkbutton">
++                                            <property name="label" translatable="yes">_Run command as a login shell</property>
++                                            <property name="visible">True</property>
++                                            <property name="can_focus">True</property>
++                                            <property name="receives_default">False</property>
++                                            <property name="use_underline">True</property>
++                                            <property name="draw_indicator">True</property>
++                                          </object>
++                                          <packing>
++                                            <property name="top_attach">0</property>
++                                            <property name="left_attach">0</property>
++                                            <property name="width">2</property>
++                                          </packing>
++                                        </child>
++                                        <child>
++                                          <object class="GtkCheckButton" id="use-custom-command-checkbutton">
++                                            <property name="label" translatable="yes">Ru_n a custom command instead of my shell</property>
++                                            <property name="visible">True</property>
++                                            <property name="can_focus">True</property>
++                                            <property name="receives_default">False</property>
++                                            <property name="use_underline">True</property>
++                                            <property name="draw_indicator">True</property>
++                                          </object>
++                                          <packing>
++                                            <property name="top_attach">1</property>
++                                            <property name="left_attach">0</property>
++                                            <property name="width">2</property>
++                                          </packing>
++                                        </child>
++                                        <child>
++                                          <object class="GtkLabel" id="custom-command-entry-label">
++                                            <property name="visible">True</property>
++                                            <property name="can_focus">False</property>
++                                            <property name="label" translatable="yes">Custom co_mmand:</property>
++                                            <property name="use_underline">True</property>
++                                            <property name="mnemonic_widget">custom-command-entry</property>
++                                            <property name="xalign">0</property>
++                                          </object>
++                                          <packing>
++                                            <property name="top_attach">2</property>
++                                            <property name="left_attach">0</property>
++                                          </packing>
++                                        </child>
++                                        <child>
++                                          <object class="GtkEntry" id="custom-command-entry">
++                                            <property name="visible">True</property>
++                                            <property name="can_focus">True</property>
++                                            <property name="hexpand">True</property>
++                                            <property name="input_hints">GTK_INPUT_HINT_NO_EMOJI</property>
++                                          </object>
++                                          <packing>
++                                            <property name="top_attach">2</property>
++                                            <property name="left_attach">1</property>
++                                          </packing>
++                                        </child>
++                                        <child>
++                                          <object class="GtkLabel" id="preserve-working-directory-checkbutton-label">
++                                            <property name="visible">True</property>
++                                            <property name="can_focus">False</property>
++                                            <property name="label" translatable="yes">_Preserve working directory:</property>
++                                            <property name="use_underline">True</property>
++                                            <property name="justify">center</property>
++                                            <property name="mnemonic_widget">preserve-working-directory-combobox</property>
++                                            <property name="xalign">0</property>
++                                          </object>
++                                          <packing>
++                                            <property name="top_attach">3</property>
++                                            <property name="left_attach">0</property>
++                                          </packing>
++                                        </child>
++                                        <child>
++                                          <object class="GtkComboBox" id="preserve-working-directory-combobox">
++                                            <property name="visible">True</property>
++                                            <property name="can_focus">False</property>
++                                            <property name="model">preserve-working-directory-model</property>
++                                            <property name="focus_on_click">False</property>
++                                            <property name="halign">start</property>
++                                            <child>
++                                              <object class="GtkCellRendererText" id="preserve-working-directory-renderer"/>
++                                              <attributes>
++                                                <attribute name="text">0</attribute>
++                                              </attributes>
++                                            </child>
++                                          </object>
++                                          <packing>
++                                            <property name="top_attach">3</property>
++                                            <property name="left_attach">1</property>
++                                          </packing>
++                                        </child>
++                                        <child>
++                                          <object class="GtkLabel" id="exit-action-combobox-label">
++                                            <property name="visible">True</property>
++                                            <property name="can_focus">False</property>
++                                            <property name="label" translatable="yes">When command _exits:</property>
++                                            <property name="use_underline">True</property>
++                                            <property name="mnemonic_widget">exit-action-combobox</property>
++                                            <property name="xalign">0</property>
++                                          </object>
++                                          <packing>
++                                            <property name="top_attach">4</property>
++                                            <property name="left_attach">0</property>
++                                          </packing>
++                                        </child>
++                                        <child>
++                                          <object class="GtkComboBox" id="exit-action-combobox">
++                                            <property name="visible">True</property>
++                                            <property name="can_focus">False</property>
++                                            <property name="model">model3</property>
++                                            <property name="focus_on_click">False</property>
++                                            <property name="halign">start</property>
++                                            <child>
++                                              <object class="GtkCellRendererText" id="renderer3"/>
++                                              <attributes>
++                                                <attribute name="text">0</attribute>
++                                              </attributes>
++                                            </child>
++                                          </object>
++                                          <packing>
++                                            <property name="top_attach">4</property>
++                                            <property name="left_attach">1</property>
++                                          </packing>
++                                        </child>
++                                      </object>
++                                    </child>
++                                  </object>
++                                  <packing>
++                                    <property name="top_attach">1</property>
++                                    <property name="left_attach">0</property>
++                                    <property name="width">3</property>
++                                  </packing>
+                                 </child>
+                               </object>
+                               <packing>
+-                                <property name="top_attach">4</property>
+-                                <property name="left_attach">1</property>
++                                <property name="top_attach">1</property>
++                                <property name="left_attach">0</property>
+                               </packing>
+                             </child>
+                           </object>
+diff '--exclude=.git' -urN a/src/profile-editor.c b/src/profile-editor.c
+--- a/src/profile-editor.c	2020-04-08 20:43:35.284796377 -0500
++++ b/src/profile-editor.c	2020-04-08 20:43:47.218745504 -0500
+@@ -1331,6 +1331,20 @@
+                                             (GSettingsBindSetMapping) enum_to_string,
+                                             terminal_preserve_working_directory_get_type, NULL);
+ 
++  profile_prefs_settings_bind (profile,
++                               TERMINAL_PROFILE_TITLE_KEY,
++                               gtk_builder_get_object (builder, "title-entry"),
++                               "text",
++                               G_SETTINGS_BIND_GET | G_SETTINGS_BIND_SET);
++  profile_prefs_settings_bind_with_mapping (profile,
++                                            TERMINAL_PROFILE_TITLE_MODE_KEY,
++                                            gtk_builder_get_object (builder,
++                                                                    "title-mode-combobox"),
++                                            "active",
++                                            G_SETTINGS_BIND_GET | G_SETTINGS_BIND_SET,
++                                            (GSettingsBindGetMapping) string_to_enum,
++                                            (GSettingsBindSetMapping) enum_to_string,
++                                            terminal_title_mode_get_type, NULL);
+   profile_prefs_settings_bind (profile, TERMINAL_PROFILE_USE_CUSTOM_COMMAND_KEY,
+                                gtk_builder_get_object (builder,
+                                                        "use-custom-command-checkbutton"),
+diff '--exclude=.git' -urN a/src/terminal-accels.c b/src/terminal-accels.c
+--- a/src/terminal-accels.c	2020-03-05 15:43:41.000000000 -0600
++++ b/src/terminal-accels.c	2020-04-08 20:43:47.217745508 -0500
+@@ -76,6 +76,7 @@
+ #define KEY_RESET               "reset"
+ #define KEY_SAVE_CONTENTS       "save-contents"
+ #define KEY_SELECT_ALL          "select-all"
++#define KEY_SET_TERMINAL_TITLE  "set-terminal-title"
+ #define KEY_TOGGLE_MENUBAR      "toggle-menubar"
+ #define KEY_ZOOM_IN             "zoom-in"
+ #define KEY_ZOOM_NORMAL         "zoom-normal"
+@@ -165,6 +166,7 @@
+   ENTRY (N_("Read-Only"),       KEY_READ_ONLY,          "read-only", NULL, NULL   ),
+   ENTRY (N_("Reset"),           KEY_RESET,              "reset",     "b",  "false"),
+   ENTRY (N_("Reset and Clear"), KEY_RESET_AND_CLEAR,    "reset",     "b",  "true" ),
++  ENTRY (N_("Set Title"),       KEY_SET_TERMINAL_TITLE, "set-title", NULL, NULL   ),
+ };
+ 
+ static KeyEntry tabs_entries[] = {
+diff '--exclude=.git' -urN a/src/terminal-app.c b/src/terminal-app.c
+--- a/src/terminal-app.c	2020-03-05 15:43:41.000000000 -0600
++++ b/src/terminal-app.c	2020-04-08 20:43:47.214745521 -0500
+@@ -730,6 +730,31 @@
+     gtk_widget_destroy (GTK_WIDGET (window));
+ }
+ 
++/* Other action callbacks */
++
++static void
++action_activate_tab_cb (GSimpleAction *action,
++                        GVariant      *parameter,
++                        gpointer       user_data)
++{
++  GtkApplication *application = user_data;
++  GtkWidget *toplevel;
++  TerminalScreen *screen;
++  const char *uuid;
++
++  g_variant_get (parameter, "&s", &uuid);
++  screen = terminal_app_get_screen_by_uuid (TERMINAL_APP (application), uuid);
++  if (screen == NULL)
++    return;
++
++  toplevel = gtk_widget_get_toplevel (GTK_WIDGET (screen));
++  if (!gtk_widget_is_toplevel (toplevel))
++    return;
++
++  terminal_window_switch_screen (TERMINAL_WINDOW (toplevel), screen);
++  gtk_window_present (GTK_WINDOW (toplevel));
++}
++
+ /* Class implementation */
+ 
+ G_DEFINE_TYPE (TerminalApp, terminal_app, GTK_TYPE_APPLICATION)
+@@ -753,6 +778,10 @@
+     { "quit",        app_menu_quit_cb,          NULL, NULL, NULL }
+   };
+ 
++  const GActionEntry other_actions[] = {
++    { "activate-tab",   action_activate_tab_cb, "s",  NULL, NULL }
++  };
++
+   g_application_set_resource_base_path (application, TERMINAL_RESOURCES_PATH_PREFIX);
+ 
+   G_APPLICATION_CLASS (terminal_app_parent_class)->startup (application);
+@@ -763,6 +792,9 @@
+   g_action_map_add_action_entries (G_ACTION_MAP (application),
+                                    action_entries, G_N_ELEMENTS (action_entries),
+                                    application);
++  g_action_map_add_action_entries (G_ACTION_MAP (application),
++                                   other_actions, G_N_ELEMENTS (other_actions),
++                                   application);
+ 
+   app_load_css (application);
+ 
+diff '--exclude=.git' -urN a/src/terminal-debug.c b/src/terminal-debug.c
+--- a/src/terminal-debug.c	2020-03-05 15:43:41.000000000 -0600
++++ b/src/terminal-debug.c	2020-04-08 20:43:47.214745521 -0500
+@@ -38,6 +38,7 @@
+     { "profile",       TERMINAL_DEBUG_PROFILE       },
+     { "settings-list", TERMINAL_DEBUG_SETTINGS_LIST },
+     { "search",        TERMINAL_DEBUG_SEARCH        },
++    { "shell-command", TERMINAL_DEBUG_SHELL_COMMAND },
+   };
+ 
+   _terminal_debug_flags = g_parse_debug_string (g_getenv ("GNOME_TERMINAL_DEBUG"),
+diff '--exclude=.git' -urN a/src/terminal-debug.h b/src/terminal-debug.h
+--- a/src/terminal-debug.h	2020-03-05 15:43:41.000000000 -0600
++++ b/src/terminal-debug.h	2020-04-08 20:43:47.214745521 -0500
+@@ -34,7 +34,8 @@
+   TERMINAL_DEBUG_PROCESSES     = 1 << 6,
+   TERMINAL_DEBUG_PROFILE       = 1 << 7,
+   TERMINAL_DEBUG_SETTINGS_LIST = 1 << 8,
+-  TERMINAL_DEBUG_SEARCH        = 1 << 9
++  TERMINAL_DEBUG_SEARCH        = 1 << 9,
++  TERMINAL_DEBUG_SHELL_COMMAND = 1 << 10,
+ } TerminalDebugFlags;
+ 
+ void _terminal_debug_init(void);
+diff '--exclude=.git' -urN a/src/terminal-enums.h b/src/terminal-enums.h
+--- a/src/terminal-enums.h	2020-03-05 15:43:41.000000000 -0600
++++ b/src/terminal-enums.h	2020-04-08 20:43:47.218745504 -0500
+@@ -36,6 +36,14 @@
+ 
+ typedef enum
+ {
++  TERMINAL_TITLE_REPLACE,
++  TERMINAL_TITLE_BEFORE,
++  TERMINAL_TITLE_AFTER,
++  TERMINAL_TITLE_IGNORE
++} TerminalTitleMode;
++
++typedef enum
++{
+   TERMINAL_EXIT_CLOSE,
+   TERMINAL_EXIT_RESTART,
+   TERMINAL_EXIT_HOLD
+diff '--exclude=.git' -urN a/src/terminal-schemas.h b/src/terminal-schemas.h
+--- a/src/terminal-schemas.h	2020-04-08 20:43:35.284796377 -0500
++++ b/src/terminal-schemas.h	2020-04-08 20:43:47.219745499 -0500
+@@ -67,7 +67,10 @@
+ #define TERMINAL_PROFILE_SCROLLBAR_POLICY_KEY           "scrollbar-policy"
+ #define TERMINAL_PROFILE_SCROLL_ON_KEYSTROKE_KEY        "scroll-on-keystroke"
+ #define TERMINAL_PROFILE_SCROLL_ON_OUTPUT_KEY           "scroll-on-output"
++#define TERMINAL_PROFILE_SHOW_FOREGROUND_PROCESS_IN_TITLE "show-foreground-process-in-title"
+ #define TERMINAL_PROFILE_TEXT_BLINK_MODE_KEY            "text-blink-mode"
++#define TERMINAL_PROFILE_TITLE_MODE_KEY                 "title-mode"
++#define TERMINAL_PROFILE_TITLE_KEY                      "title"
+ #define TERMINAL_PROFILE_USE_CUSTOM_COMMAND_KEY         "use-custom-command"
+ #define TERMINAL_PROFILE_USE_SKEY_KEY                   "use-skey"
+ #define TERMINAL_PROFILE_USE_SYSTEM_FONT_KEY            "use-system-font"
+diff '--exclude=.git' -urN a/src/terminal-screen.c b/src/terminal-screen.c
+--- a/src/terminal-screen.c	2020-04-08 20:43:35.285796373 -0500
++++ b/src/terminal-screen.c	2020-04-08 20:43:47.219745499 -0500
+@@ -54,6 +54,7 @@
+ #include "terminal-marshal.h"
+ #include "terminal-schemas.h"
+ #include "terminal-screen-container.h"
++#include "terminal-tab-label.h"
+ #include "terminal-util.h"
+ #include "terminal-window.h"
+ #include "terminal-info-bar.h"
+@@ -110,6 +111,17 @@
+   gboolean exec_on_realize;
+   guint idle_exec_source;
+   ExecData *exec_data;
++
++  gboolean application_title; /* title was set by an application */
++  gboolean between_preexec_and_precmd;
++  gboolean show_foreground_process;
++  gboolean user_title; /* title was manually set */
++  char *current_cmdline;
++  char *raw_title;
++  char *cooked_title;
++  char *override_title;
++  guint contents_changed_source_id;
++  guint shell_preexec_source_id;
+ };
+ 
+ enum
+@@ -124,7 +136,7 @@
+ enum {
+   PROP_0,
+   PROP_PROFILE,
+-  PROP_TITLE,
++  PROP_TITLE
+ };
+ 
+ enum
+@@ -154,18 +166,33 @@
+ static gboolean terminal_screen_popup_menu (GtkWidget *widget);
+ static gboolean terminal_screen_button_press (GtkWidget *widget,
+                                               GdkEventButton *event);
++
++static gboolean terminal_screen_focus_in (GtkWidget *widget,
++                                          GdkEventFocus *event);
++
+ static void terminal_screen_hierarchy_changed (GtkWidget *widget,
+                                                GtkWidget *previous_toplevel);
+ static void terminal_screen_child_exited  (VteTerminal *terminal,
+                                            int status);
+ 
++static void terminal_screen_contents_changed (VteTerminal *terminal);
++
++static void terminal_screen_shell_precmd (VteTerminal *terminal);
++
++static void terminal_screen_shell_preexec (VteTerminal *terminal);
++
+ static void terminal_screen_window_title_changed      (VteTerminal *vte_terminal,
+                                                        TerminalScreen *screen);
+ 
+ static void update_color_scheme                      (TerminalScreen *screen);
+ 
++static gboolean terminal_screen_format_title (TerminalScreen *screen, const char *raw_title, char **old_cooked_title);
++
++static void terminal_screen_cook_title      (TerminalScreen *screen);
++
+ static char* terminal_screen_check_hyperlink   (TerminalScreen            *screen,
+                                                 GdkEvent                  *event);
++
+ static void terminal_screen_check_extra (TerminalScreen *screen,
+                                          GdkEvent       *event,
+                                          char           **number_info);
+@@ -543,6 +570,9 @@
+   gtk_target_table_free (targets, n_targets);
+   gtk_target_list_unref (target_list);
+ 
++  priv->override_title = NULL;
++  priv->user_title = FALSE;
++
+   g_signal_connect (screen, "window-title-changed",
+                     G_CALLBACK (terminal_screen_window_title_changed),
+                     screen);
+@@ -617,6 +647,7 @@
+   object_class->get_property = terminal_screen_get_property;
+   object_class->set_property = terminal_screen_set_property;
+ 
++  widget_class->focus_in_event = terminal_screen_focus_in;
+   widget_class->realize = terminal_screen_realize;
+   widget_class->style_updated = terminal_screen_style_updated;
+   widget_class->drag_data_received = terminal_screen_drag_data_received;
+@@ -625,6 +656,9 @@
+   widget_class->hierarchy_changed = terminal_screen_hierarchy_changed;
+ 
+   terminal_class->child_exited = terminal_screen_child_exited;
++  terminal_class->contents_changed = terminal_screen_contents_changed;
++  terminal_class->shell_precmd = terminal_screen_shell_precmd;
++  terminal_class->shell_preexec = terminal_screen_shell_preexec;
+ 
+   signals[PROFILE_SET] =
+     g_signal_new (I_("profile-set"),
+@@ -713,6 +747,10 @@
+   TerminalScreen *screen = TERMINAL_SCREEN (object);
+   TerminalScreenPrivate *priv = screen->priv;
+   GtkSettings *settings;
++  TerminalApp *app;
++
++  app = terminal_app_get ();
++  g_application_withdraw_notification (G_APPLICATION (app), priv->uuid);
+ 
+   /* Unset child PID so that when an eventual child-exited signal arrives,
+    * we don't emit "close".
+@@ -724,6 +762,18 @@
+                                         0, 0, NULL, NULL,
+                                         screen);
+ 
++  if (priv->contents_changed_source_id != 0)
++    {
++      g_source_remove (priv->contents_changed_source_id);
++      priv->contents_changed_source_id = 0;
++    }
++
++  if (priv->shell_preexec_source_id != 0)
++    {
++      g_source_remove (priv->shell_preexec_source_id);
++      priv->shell_preexec_source_id = 0;
++    }
++
+   if (priv->idle_exec_source != 0)
+     {
+       g_source_remove (priv->idle_exec_source);
+@@ -760,6 +810,10 @@
+   g_slist_free_full (priv->match_tags, (GDestroyNotify) free_tag_data);
+ 
+   g_free (priv->uuid);
++  g_free (priv->current_cmdline);
++  g_free (priv->raw_title);
++  g_free (priv->cooked_title);
++  g_free (priv->override_title);
+ 
+   G_OBJECT_CLASS (terminal_screen_parent_class)->finalize (object);
+ }
+@@ -779,28 +833,8 @@
+                          g_settings_get_int (profile, TERMINAL_PROFILE_DEFAULT_SIZE_COLUMNS_KEY),
+                          g_settings_get_int (profile, TERMINAL_PROFILE_DEFAULT_SIZE_ROWS_KEY));
+ 
+-  /* If given an initial title, strip it of control characters and
+-   * feed it to the terminal.
+-   */
+-  if (title != NULL) {
+-    GString *seq;
+-    const char *p;
+-
+-    seq = g_string_new ("\033]0;");
+-    for (p = title; *p; p = g_utf8_next_char (p)) {
+-      gunichar c = g_utf8_get_char (p);
+-      if (c < 0x20 || (c >= 0x7f && c <= 0x9f))
+-        continue;
+-      else if (c == ';')
+-        break;
+-
+-      g_string_append_unichar (seq, c);
+-    }
+-    g_string_append (seq, "\033\\");
+-
+-    vte_terminal_feed (VTE_TERMINAL (screen), seq->str, seq->len);
+-    g_string_free (seq, TRUE);
+-  }
++  if (title)
++    terminal_screen_set_override_title (screen, title);
+ 
+   vte_terminal_set_font_scale (VTE_TERMINAL (screen), zoom);
+   terminal_screen_set_font (screen);
+@@ -844,6 +878,25 @@
+                                     GCancellable *cancellable,
+                                     GError **error)
+ {
++  _terminal_debug_print (TERMINAL_DEBUG_PROCESSES,
++                         "[screen %p] reexec_from_screen: parent:%p\n",
++                         screen,
++                         parent_screen);
++
++  return terminal_screen_reexec_from_screen_with_override_command (screen,
++                                                                   parent_screen,
++                                                                   NULL,
++                                                                   cancellable,
++                                                                   error);
++}
++
++gboolean
++terminal_screen_reexec_from_screen_with_override_command (TerminalScreen *screen,
++                                                          TerminalScreen *parent_screen,
++                                                          char **override_command,
++                                                          GCancellable *cancellable,
++                                                          GError **error)
++{
+   g_return_val_if_fail (TERMINAL_IS_SCREEN (screen), FALSE);
+ 
+   if (parent_screen == NULL)
+@@ -853,15 +906,27 @@
+ 
+   gs_free char* cwd = terminal_screen_get_current_dir (parent_screen);
+ 
++  terminal_unref_exec_data ExecData* data = NULL;
++  if (override_command != NULL)
++    {
++      data = exec_data_clone (parent_screen->priv->exec_data);
++
++      g_strfreev (data->argv);
++      data->argv = g_strdupv (override_command);
++
++      g_free (data->cwd);
++      data->cwd = g_strdup (cwd);
++    }
++
+   _terminal_debug_print (TERMINAL_DEBUG_PROCESSES,
+-                         "[screen %p] reexec_from_screen: parent:%p cwd:%s\n",
++                         "[screen %p] reexec_from_screen_with_override_command: parent:%p cwd:%s\n",
+                          screen,
+                          parent_screen,
+                          cwd);
+ 
+   return terminal_screen_reexec_from_exec_data (screen,
+-                                                NULL /* exec data */,
+-                                                NULL /* envv */,
++                                                data,
++                                                parent_screen->priv->exec_data->envv,
+                                                 cwd,
+                                                 cancellable,
+                                                 error);
+@@ -997,9 +1062,152 @@
+ }
+ 
+ const char*
++terminal_screen_get_raw_title (TerminalScreen *screen)
++{
++  TerminalScreenPrivate *priv = screen->priv;
++
++  if (priv->raw_title)
++    return priv->raw_title;
++
++  return "";
++}
++
++const char*
+ terminal_screen_get_title (TerminalScreen *screen)
+ {
+-  return vte_terminal_get_window_title (VTE_TERMINAL (screen));
++  TerminalScreenPrivate *priv = screen->priv;
++
++  if (priv->cooked_title == NULL)
++    terminal_screen_cook_title (screen);
++
++  /* cooked_title may still be NULL */
++  if (priv->cooked_title != NULL)
++    return priv->cooked_title;
++  else
++    return "";
++}
++
++/* Supported format specifiers:
++ * %S = static title
++ * %D = dynamic title
++ * %A = dynamic title, falling back to static title if empty
++ * %- = separator, if not at start or end of string (excluding whitespace)
++ */
++static const char *
++terminal_screen_get_title_format (TerminalScreen *screen)
++{
++  TerminalScreenPrivate *priv = screen->priv;
++  static const char *formats[] = {
++    "%A"      /* TERMINAL_TITLE_REPLACE */,
++    "%D%-%S"  /* TERMINAL_TITLE_BEFORE  */,
++    "%S%-%D"  /* TERMINAL_TITLE_AFTER   */,
++    "%S"      /* TERMINAL_TITLE_IGNORE  */
++  };
++
++  return formats[g_settings_get_enum (priv->profile, TERMINAL_PROFILE_TITLE_MODE_KEY)];
++}
++
++/**
++ * terminal_screen_format_title::
++ * @screen:
++ * @raw_title: main ingredient
++ * @titleptr <inout>: pointer of the current title string
++ *
++ * Format title according @format, and stores it in <literal>*titleptr</literal>.
++ * Always ensures that *titleptr will be non-NULL.
++ *
++ * Returns: %TRUE iff the title changed
++ */
++static gboolean
++terminal_screen_format_title (TerminalScreen *screen,
++                              const char *raw_title,
++                              char **titleptr)
++{
++  TerminalScreenPrivate *priv = screen->priv;
++  gs_free char *static_title_string = NULL;
++  const char *format, *arg;
++  const char *static_title = NULL;
++  GString *title;
++  gboolean add_sep = FALSE;
++
++  g_assert (titleptr);
++
++  /* use --title argument if one was supplied, otherwise ask the profile */
++  if (priv->override_title)
++    static_title = priv->override_title;
++  else
++    static_title = static_title_string = g_settings_get_string (priv->profile, TERMINAL_PROFILE_TITLE_KEY);
++
++  title = g_string_sized_new (128);
++
++  format = terminal_screen_get_title_format (screen);
++  for (arg = format; *arg; arg += 2)
++    {
++      const char *text_to_append = NULL;
++
++      g_assert (arg[0] == '%');
++
++      switch (arg[1])
++        {
++          case 'A':
++            text_to_append = raw_title ? raw_title : static_title;
++            break;
++          case 'D':
++            text_to_append = raw_title;
++            break;
++          case 'S':
++            text_to_append = static_title;
++            break;
++          case '-':
++            text_to_append = NULL;
++            add_sep = TRUE;
++            break;
++          default:
++            g_assert_not_reached ();
++        }
++
++      if (!text_to_append || !text_to_append[0])
++        continue;
++
++      if (add_sep && title->len > 0)
++        g_string_append (title, " — ");
++
++      g_string_append (title, text_to_append);
++      add_sep = FALSE;
++    }
++
++  if (priv->show_foreground_process &&
++      !priv->application_title &&
++      !priv->user_title &&
++      priv->current_cmdline != NULL &&
++      priv->current_cmdline[0] != '\0')
++    {
++      gs_free char *current_cmdline_truncated = NULL;
++      gs_free char *current_cmdline_valid = NULL;
++
++      current_cmdline_valid = g_utf8_make_valid (priv->current_cmdline, -1);
++      current_cmdline_truncated = g_utf8_substring (current_cmdline_valid, 0, 1024);
++      g_string_append_printf (title, " — %s", current_cmdline_truncated);
++    }
++
++  if (*titleptr == NULL || strcmp (title->str, *titleptr) != 0)
++    {
++      g_free (*titleptr);
++      *titleptr = g_string_free (title, FALSE);
++      return TRUE;
++    }
++
++  g_string_free (title, TRUE);
++  return FALSE;
++}
++
++static void
++terminal_screen_cook_title (TerminalScreen *screen)
++{
++  TerminalScreenPrivate *priv = screen->priv;
++
++  if (terminal_screen_format_title (screen, priv->raw_title, &priv->cooked_title))
++    g_object_notify (G_OBJECT (screen), "title");
+ }
+ 
+ static void
+@@ -1011,6 +1219,7 @@
+   GObject *object = G_OBJECT (screen);
+   VteTerminal *vte_terminal = VTE_TERMINAL (screen);
+   TerminalWindow *window;
++  gboolean cook_title = FALSE;
+ 
+   g_object_freeze_notify (object);
+ 
+@@ -1041,6 +1250,13 @@
+       vte_terminal_set_cjk_ambiguous_width (vte_terminal, (int) width);
+     }
+ 
++  if (!prop_name ||
++      prop_name == I_(TERMINAL_PROFILE_TITLE_MODE_KEY) ||
++      prop_name == I_(TERMINAL_PROFILE_TITLE_KEY))
++    {
++      cook_title = TRUE;
++    }
++
+   if (gtk_widget_get_realized (GTK_WIDGET (screen)) &&
+       (!prop_name ||
+        prop_name == I_(TERMINAL_PROFILE_USE_SYSTEM_FONT_KEY) ||
+@@ -1066,6 +1282,13 @@
+       prop_name == I_(TERMINAL_PROFILE_BACKGROUND_TRANSPARENCY_PERCENT))
+     update_color_scheme (screen);
+ 
++  if (!prop_name || prop_name == I_(TERMINAL_PROFILE_SHOW_FOREGROUND_PROCESS_IN_TITLE))
++    {
++      priv->show_foreground_process = g_settings_get_boolean (profile,
++                                                              TERMINAL_PROFILE_SHOW_FOREGROUND_PROCESS_IN_TITLE);
++      cook_title = TRUE;
++    }
++
+   if (!prop_name || prop_name == I_(TERMINAL_PROFILE_AUDIBLE_BELL_KEY))
+       vte_terminal_set_audible_bell (vte_terminal, g_settings_get_boolean (profile, TERMINAL_PROFILE_AUDIBLE_BELL_KEY));
+ 
+@@ -1126,6 +1349,9 @@
+       vte_terminal_set_word_char_exceptions (vte_terminal, word_char_exceptions);
+     }
+ 
++  if (cook_title)
++    terminal_screen_cook_title (screen);
++
+   g_object_thaw_notify (object);
+ }
+ 
+@@ -1906,6 +2132,86 @@
+   return FALSE;
+ }
+ 
++static gboolean
++terminal_screen_focus_in (GtkWidget     *widget,
++                          GdkEventFocus *event)
++{
++  TerminalScreen *screen = TERMINAL_SCREEN (widget);
++  TerminalApp *app;
++  TerminalWindow *window;
++
++  _terminal_debug_print (TERMINAL_DEBUG_SHELL_COMMAND, "Notification withdrawn\n");
++
++  window = terminal_screen_get_window (screen);
++  if (window != NULL)
++    {
++      TerminalScreenContainer *screen_container;
++
++      screen_container = terminal_screen_container_get_from_screen (screen);
++      if (screen_container != NULL)
++        {
++          GtkWidget *mdi_container;
++
++          mdi_container = terminal_window_get_mdi_container (window);
++          /* FIXME: add interface method to retrieve tab label */
++          if (GTK_IS_NOTEBOOK (mdi_container))
++            {
++              GtkWidget *tab_label;
++
++              tab_label = gtk_notebook_get_tab_label (GTK_NOTEBOOK (mdi_container), GTK_WIDGET (screen_container));
++              terminal_tab_label_set_bold (TERMINAL_TAB_LABEL (tab_label), FALSE);
++              terminal_tab_label_set_icon (TERMINAL_TAB_LABEL (tab_label), NULL, NULL);
++            }
++        }
++    }
++
++  app = terminal_app_get ();
++  g_application_withdraw_notification (G_APPLICATION (app), screen->priv->uuid);
++
++  return GTK_WIDGET_CLASS (terminal_screen_parent_class)->focus_in_event (widget, event);
++}
++
++static void
++terminal_screen_set_dynamic_title (TerminalScreen *screen,
++                                   const char     *title,
++				   gboolean	  userset)
++{
++  TerminalScreenPrivate *priv = screen->priv;
++
++  g_assert (TERMINAL_IS_SCREEN (screen));
++
++  if ((priv->user_title && !userset) ||
++      (priv->raw_title && title &&
++       strcmp (priv->raw_title, title) == 0))
++    return;
++
++  g_free (priv->raw_title);
++  priv->raw_title = g_strdup (title);
++  terminal_screen_cook_title (screen);
++}
++
++void
++terminal_screen_set_override_title (TerminalScreen *screen,
++                                    const char     *title)
++{
++  TerminalScreenPrivate *priv = screen->priv;
++  char *old_title;
++
++  old_title = priv->override_title;
++  priv->override_title = g_strdup (title);
++  g_free (old_title);
++
++  terminal_screen_set_dynamic_title (screen, title, FALSE);
++}
++
++const char*
++terminal_screen_get_dynamic_title (TerminalScreen *screen)
++{
++  g_return_val_if_fail (TERMINAL_IS_SCREEN (screen), NULL);
++
++  return screen->priv->raw_title;
++}
++
+ /**
+  * terminal_screen_get_current_dir:
+  * @screen:
+@@ -1936,7 +2242,12 @@
+ terminal_screen_window_title_changed (VteTerminal *vte_terminal,
+                                       TerminalScreen *screen)
+ {
+-  g_object_notify (G_OBJECT (screen), "title");
++  TerminalScreenPrivate *priv = screen->priv;
++
++  priv->application_title = priv->between_preexec_and_precmd;
++  terminal_screen_set_dynamic_title (screen,
++                                     vte_terminal_get_window_title (vte_terminal),
++				     FALSE);
+ }
+ 
+ static void
+@@ -2002,6 +2313,207 @@
+     }
+ }
+ 
++void
++terminal_screen_set_user_title (TerminalScreen *screen,
++                                const char *text)
++{
++  TerminalScreenPrivate *priv = screen->priv;
++
++  /* The user set the title to nothing, let's understand that as a
++     request to revert to dynamically setting the title again. */
++  if (!text || !text[0])
++    priv->user_title = FALSE;
++  else
++    {
++      priv->user_title = TRUE;
++      terminal_screen_set_dynamic_title (screen, text, TRUE);
++    }
++}
++
++static gboolean
++terminal_screen_contents_changed_cb (TerminalScreen *screen)
++{
++  TerminalScreenPrivate *priv = screen->priv;
++  gs_free char *cmdline = NULL;
++
++  g_return_val_if_fail (priv->between_preexec_and_precmd, G_SOURCE_REMOVE);
++  g_return_val_if_fail (priv->shell_preexec_source_id == 0, G_SOURCE_REMOVE);
++
++  _terminal_debug_print (TERMINAL_DEBUG_SHELL_COMMAND, "Contents changed [timeout]\n");
++
++  if (!terminal_screen_has_foreground_process (screen, NULL, &cmdline))
++    goto out;
++
++  if (g_strcmp0 (priv->current_cmdline, cmdline) == 0)
++    goto out;
++
++  g_free (priv->current_cmdline);
++  priv->current_cmdline = g_steal_pointer (&cmdline);
++  _terminal_debug_print (TERMINAL_DEBUG_SHELL_COMMAND, "Current foreground command-line: %s\n", priv->current_cmdline);
++
++  terminal_screen_cook_title (screen);
++
++ out:
++  priv->contents_changed_source_id = 0;
++  return G_SOURCE_REMOVE;
++}
++
++static void
++terminal_screen_contents_changed (VteTerminal *terminal)
++{
++  TerminalScreen *screen = TERMINAL_SCREEN (terminal);
++  TerminalScreenPrivate *priv = screen->priv;
++
++  _terminal_debug_print (TERMINAL_DEBUG_SHELL_COMMAND, "Contents changed\n");
++
++  if (!priv->between_preexec_and_precmd)
++    return;
++
++  if (priv->shell_preexec_source_id != 0)
++    return;
++
++  if (priv->contents_changed_source_id != 0)
++    return;
++
++  priv->contents_changed_source_id = g_timeout_add (500,
++                                                    (GSourceFunc) terminal_screen_contents_changed_cb,
++                                                    screen);
++}
++
++static void
++terminal_screen_show_notification (TerminalScreen *screen)
++{
++  TerminalScreenPrivate *priv = screen->priv;
++  TerminalWindow *window;
++
++  window = terminal_screen_get_window (screen);
++  if (window == NULL)
++    return;
++
++  if (gtk_window_is_active (GTK_WINDOW (window)))
++    {
++      GtkWidget *mdi_container;
++      TerminalScreenContainer *screen_container;
++
++      if (screen == terminal_window_get_active (window))
++        return;
++
++      screen_container = terminal_screen_container_get_from_screen (screen);
++      if (screen_container == NULL)
++        return;
++
++      mdi_container = terminal_window_get_mdi_container (window);
++      /* FIXME: add interface method to retrieve tab label */
++      if (GTK_IS_NOTEBOOK (mdi_container))
++        {
++          GtkWidget *tab_label;
++
++          tab_label = gtk_notebook_get_tab_label (GTK_NOTEBOOK (mdi_container), GTK_WIDGET (screen_container));
++          terminal_tab_label_set_bold (TERMINAL_TAB_LABEL (tab_label), TRUE);
++          terminal_tab_label_set_icon (TERMINAL_TAB_LABEL (tab_label),
++                                       "dialog-information-symbolic",
++                                       _("Command completed"));
++          _terminal_debug_print (TERMINAL_DEBUG_SHELL_COMMAND, "Notify tab\n");
++        }
++    }
++  else
++    {
++      gs_unref_object GNotification *notification = NULL;
++      TerminalApp *app;
++      gs_free char *current_cmdline_valid = NULL;
++      gs_free char *detailed_action = NULL;
++
++      notification = g_notification_new (_("Command completed"));
++
++      current_cmdline_valid = g_utf8_make_valid (priv->current_cmdline, -1);
++      g_notification_set_body (notification, current_cmdline_valid);
++
++      detailed_action = g_strdup_printf ("app.activate-tab::%s", priv->uuid);
++      g_notification_set_default_action (notification, detailed_action);
++
++      app = terminal_app_get ();
++      g_application_send_notification (G_APPLICATION (app), priv->uuid, notification);
++      _terminal_debug_print (TERMINAL_DEBUG_SHELL_COMMAND, "Notify desktop\n");
++    }
++}
++
++static void
++terminal_screen_shell_precmd (VteTerminal *terminal)
++{
++  TerminalScreen *screen = TERMINAL_SCREEN (terminal);
++  TerminalScreenPrivate *priv = screen->priv;
++
++  _terminal_debug_print (TERMINAL_DEBUG_SHELL_COMMAND, "Shell precmd\n");
++
++  priv->application_title = FALSE;
++  priv->between_preexec_and_precmd = FALSE;
++
++  if (priv->contents_changed_source_id != 0)
++    {
++      g_source_remove (priv->contents_changed_source_id);
++      priv->contents_changed_source_id = 0;
++    }
++
++  if (priv->shell_preexec_source_id != 0)
++    {
++      g_source_remove (priv->shell_preexec_source_id);
++      priv->shell_preexec_source_id = 0;
++    }
++
++  if (priv->current_cmdline != NULL)
++    terminal_screen_show_notification (screen);
++
++  g_clear_pointer (&priv->current_cmdline, g_free);
++  _terminal_debug_print (TERMINAL_DEBUG_SHELL_COMMAND, "Current foreground command-line: (none)\n");
++
++  terminal_screen_cook_title (screen);
++}
++
++static gboolean
++terminal_screen_shell_preexec_cb (TerminalScreen *screen)
++{
++  TerminalScreenPrivate *priv = screen->priv;
++  gboolean retval = G_SOURCE_CONTINUE;
++  gs_free char *cmdline = NULL;
++
++  g_return_val_if_fail (priv->between_preexec_and_precmd, G_SOURCE_REMOVE);
++  g_return_val_if_fail (priv->current_cmdline == NULL, G_SOURCE_REMOVE);
++
++  _terminal_debug_print (TERMINAL_DEBUG_SHELL_COMMAND, "Shell preexec [timeout]\n");
++
++  if (!terminal_screen_has_foreground_process (screen, NULL, &cmdline))
++    goto out;
++
++  priv->current_cmdline = g_steal_pointer (&cmdline);
++  _terminal_debug_print (TERMINAL_DEBUG_SHELL_COMMAND, "Current foreground command-line: %s\n", priv->current_cmdline);
++
++  terminal_screen_cook_title (screen);
++
++  priv->shell_preexec_source_id = 0;
++  retval = G_SOURCE_REMOVE;
++
++ out:
++  return retval;
++}
++
++static void
++terminal_screen_shell_preexec (VteTerminal *terminal)
++{
++  TerminalScreen *screen = TERMINAL_SCREEN (terminal);
++  TerminalScreenPrivate *priv = screen->priv;
++
++  g_return_if_fail (!priv->between_preexec_and_precmd);
++  g_return_if_fail (priv->contents_changed_source_id == 0);
++  g_return_if_fail (priv->current_cmdline == NULL);
++  g_return_if_fail (priv->shell_preexec_source_id == 0);
++
++  _terminal_debug_print (TERMINAL_DEBUG_SHELL_COMMAND, "Shell preexec\n");
++
++  priv->between_preexec_and_precmd = TRUE;
++
++  priv->shell_preexec_source_id = g_timeout_add (200, (GSourceFunc) terminal_screen_shell_preexec_cb, screen);
++}
++
+ static void
+ terminal_screen_drag_data_received (GtkWidget        *widget,
+                                     GdkDragContext   *context,
+@@ -2347,7 +2859,11 @@
+   if (fd == -1)
+     return FALSE;
+ 
++  _terminal_debug_print (TERMINAL_DEBUG_SHELL_COMMAND, "Child PID: %d\n", priv->child_pid);
++
+   fgpid = tcgetpgrp (fd);
++  _terminal_debug_print (TERMINAL_DEBUG_SHELL_COMMAND, "Current foreground process group [tcgetpgrp]: %d\n", fgpid);
++
+   if (fgpid == -1 || fgpid == priv->child_pid)
+     return FALSE;
+ 
+@@ -2378,7 +2894,35 @@
+ #else
+   g_snprintf (filename, sizeof (filename), "/proc/%d/cmdline", fgpid);
+   if (!g_file_get_contents (filename, &data_buf, &len, NULL))
+-    return TRUE;
++    {
++      int j;
++
++      for (j = 0; j < 20; j++)
++        {
++          pid_t pgid;
++          pid_t pid;
++
++          pid = (pid_t) (fgpid + 1 + j);
++          pgid = getpgid (pid);
++          if (pgid != fgpid)
++            {
++              pid = (pid_t) (2 + j);
++              pgid = getpgid (pid);
++              if (pgid != fgpid)
++                continue;
++            }
++
++          g_snprintf (filename, sizeof (filename), "/proc/%d/cmdline", (int) pid);
++
++          g_clear_pointer (&data_buf, g_free);
++          if (g_file_get_contents (filename, &data_buf, &len, NULL))
++            break;
++        }
++
++      if (j == 20)
++        return TRUE;
++    }
++
+   data = data_buf;
+ #endif
+ 
+diff '--exclude=.git' -urN a/src/terminal-screen.h b/src/terminal-screen.h
+--- a/src/terminal-screen.h	2020-03-05 15:43:41.000000000 -0600
++++ b/src/terminal-screen.h	2020-04-08 20:43:47.219745499 -0500
+@@ -108,13 +108,28 @@
+                                              GCancellable *cancellable,
+                                              GError **error);
+ 
++gboolean terminal_screen_reexec_from_screen_with_override_command (TerminalScreen *screen,
++                                                                   TerminalScreen *parent_screen,
++                                                                   char **override_command,
++                                                                   GCancellable *cancellable,
++                                                                   GError **error);
++
+ void terminal_screen_set_profile (TerminalScreen *screen,
+                                   GSettings      *profile);
+ GSettings* terminal_screen_get_profile (TerminalScreen *screen);
+ GSettings* terminal_screen_ref_profile (TerminalScreen *screen);
+ 
++const char* terminal_screen_get_raw_title      (TerminalScreen *screen);
+ const char* terminal_screen_get_title          (TerminalScreen *screen);
+ 
++void terminal_screen_set_user_title (TerminalScreen *screen,
++                                     const char *text);
++
++void        terminal_screen_set_override_title     (TerminalScreen *screen,
++                                                    const char     *title);
++
++const char *terminal_screen_get_dynamic_title      (TerminalScreen *screen);
++
+ char *terminal_screen_get_current_dir (TerminalScreen *screen);
+ 
+ void       terminal_screen_get_size (TerminalScreen *screen,
+diff '--exclude=.git' -urN a/src/terminal-tab-label.c b/src/terminal-tab-label.c
+--- a/src/terminal-tab-label.c	2020-03-05 15:43:41.000000000 -0600
++++ b/src/terminal-tab-label.c	2020-04-08 20:43:47.215745516 -0500
+@@ -34,6 +34,7 @@
+ struct _TerminalTabLabelPrivate
+ {
+   TerminalScreen *screen;
++  GtkWidget *icon;
+   GtkWidget *label;
+   GtkWidget *close_button;
+   gboolean bold;
+@@ -179,7 +180,7 @@
+ {
+   TerminalTabLabel *tab_label = TERMINAL_TAB_LABEL (object);
+   TerminalTabLabelPrivate *priv = tab_label->priv;
+-  GtkWidget *hbox, *label, *close_button;
++  GtkWidget *hbox, *icon, *label, *close_button;
+ 
+   G_OBJECT_CLASS (terminal_tab_label_parent_class)->constructed (object);
+ 
+@@ -189,6 +190,10 @@
+   
+   gtk_box_set_spacing (GTK_BOX (hbox), SPACING);
+ 
++  priv->icon = icon = gtk_image_new ();
++  gtk_widget_set_no_show_all (icon, TRUE);
++  gtk_box_pack_start (GTK_BOX (hbox), icon, FALSE, FALSE, 0);
++
+   priv->label = label = gtk_label_new (NULL);
+   gtk_widget_set_halign (label, GTK_ALIGN_CENTER);
+   gtk_widget_set_valign (label, GTK_ALIGN_BASELINE);
+@@ -377,6 +382,29 @@
+ }
+ 
+ /**
++ * terminal_tab_label_set_icon:
++ * @tab_label: a #TerminalTabLabel
++ * @icon_name: (allow-none): an icon name
++ * @tooltip: (allow-none): text to be used as tooltip
++ *
++ * Shows an icon at the beginning of @tab_label. If @icon_name is
++ * %NULL, then the icon will be hidden.
++ */
++void
++terminal_tab_label_set_icon (TerminalTabLabel *tab_label,
++                             const char *icon_name,
++                             const char *tooltip)
++{
++  TerminalTabLabelPrivate *priv = tab_label->priv;
++
++  g_return_if_fail (TERMINAL_IS_TAB_LABEL (tab_label));
++
++  gtk_widget_set_visible (priv->icon, icon_name != NULL);
++  gtk_image_set_from_icon_name (GTK_IMAGE (priv->icon), icon_name, GTK_ICON_SIZE_MENU);
++  gtk_widget_set_tooltip_text (GTK_WIDGET (priv->icon), tooltip);
++}
++
++/**
+  * terminal_tab_label_get_screen:
+  * @tab_label: a #TerminalTabLabel
+  *
+diff '--exclude=.git' -urN a/src/terminal-tab-label.h b/src/terminal-tab-label.h
+--- a/src/terminal-tab-label.h	2020-03-05 15:43:41.000000000 -0600
++++ b/src/terminal-tab-label.h	2020-04-08 20:43:47.215745516 -0500
+@@ -59,6 +59,10 @@
+ void            terminal_tab_label_set_bold   (TerminalTabLabel *tab_label,
+                                                gboolean bold);
+ 
++void            terminal_tab_label_set_icon   (TerminalTabLabel *tab_label,
++                                               const char *icon_name,
++                                               const char *tooltip);
++
+ TerminalScreen *terminal_tab_label_get_screen (TerminalTabLabel *tab_label);
+ 
+ G_END_DECLS
+diff '--exclude=.git' -urN a/src/terminal-window.c b/src/terminal-window.c
+--- a/src/terminal-window.c	2020-04-08 20:43:35.285796373 -0500
++++ b/src/terminal-window.c	2020-04-08 20:43:47.220745495 -0500
+@@ -405,8 +405,30 @@
+   terminal_window_switch_screen (window, screen);
+   gtk_widget_grab_focus (GTK_WIDGET (screen));
+ 
+-  /* Start child process, if possible by using the same args as the parent screen */
+-  terminal_screen_reexec_from_screen (screen, parent_screen, NULL, NULL);
++  const char *container_name = vte_terminal_get_current_container_name (VTE_TERMINAL (parent_screen));
++  const char *container_runtime = vte_terminal_get_current_container_runtime (VTE_TERMINAL (parent_screen));
++  if (g_strcmp0 (container_runtime, "toolbox") == 0 && container_name != NULL && container_name[0] != '\0')
++    {
++      gs_free_error GError *error = NULL;
++      gs_free char *override_command_str = NULL;
++      gs_strfreev char **override_command = NULL;
++
++      override_command_str = g_strdup_printf ("toolbox enter --container %s", container_name);
++      if (!g_shell_parse_argv (override_command_str, NULL, &override_command, &error))
++        g_printerr ("Failed to parse '%s': %s\n", override_command_str, error->message);
++
++      /* Start child process, if possible by using the same args as the parent screen */
++      terminal_screen_reexec_from_screen_with_override_command (screen,
++                                                                parent_screen,
++                                                                override_command,
++                                                                NULL,
++                                                                NULL);
++    }
++  else
++    {
++      /* Start child process, if possible by using the same args as the parent screen */
++      terminal_screen_reexec_from_screen (screen, parent_screen, NULL, NULL);
++    }
+ 
+   if (mode == TERMINAL_NEW_TERMINAL_MODE_WINDOW)
+     gtk_window_present (GTK_WINDOW (window));
+@@ -750,6 +772,86 @@
+ }
+ 
+ static void
++terminal_set_title_dialog_response_cb (GtkWidget *dialog,
++                                       int response,
++                                       TerminalScreen *screen)
++{
++  if (response == GTK_RESPONSE_OK)
++    {
++      GtkEntry *entry;
++      const char *text;
++
++      entry = GTK_ENTRY (g_object_get_data (G_OBJECT (dialog), "title-entry"));
++      text = gtk_entry_get_text (entry);
++      terminal_screen_set_user_title (screen, text);
++    }
++
++  gtk_widget_destroy (dialog);
++}
++
++static const char *
++terminal_screen_get_user_title (TerminalScreen *screen)
++{
++  return terminal_screen_get_raw_title (screen);
++}
++
++static void
++action_set_title_cb (GSimpleAction *action,
++                     GVariant *parameter,
++                     gpointer user_data)
++{
++  TerminalWindow *window = user_data;
++  TerminalWindowPrivate *priv = window->priv;
++  GtkWidget *dialog, *message_area, *hbox, *label, *entry;
++
++  if (priv->active_screen == NULL)
++    return;
++
++  /* FIXME: hook the screen up so this dialogue closes if the terminal screen closes */
++
++  dialog = gtk_message_dialog_new (GTK_WINDOW (window),
++                                   GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
++                                   GTK_MESSAGE_OTHER,
++                                   GTK_BUTTONS_OK_CANCEL,
++                                   "%s", "");
++
++  gtk_window_set_title (GTK_WINDOW (dialog), _("Set Title"));
++  gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
++  gtk_window_set_role (GTK_WINDOW (dialog), "gnome-terminal-change-title");
++  gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
++  /* Alternative button order was set automatically by GtkMessageDialog */
++
++  g_signal_connect (dialog, "response",
++                    G_CALLBACK (terminal_set_title_dialog_response_cb), priv->active_screen);
++  g_signal_connect (dialog, "delete-event",
++                    G_CALLBACK (terminal_util_dialog_response_on_delete), NULL);
++
++  message_area = gtk_message_dialog_get_message_area (GTK_MESSAGE_DIALOG (dialog));
++  gtk_container_foreach (GTK_CONTAINER (message_area), (GtkCallback) gtk_widget_hide, NULL);
++
++  hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
++  gtk_box_pack_start (GTK_BOX (message_area), hbox, FALSE, FALSE, 0);
++
++  label = gtk_label_new_with_mnemonic (_("_Title:"));
++  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
++  gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
++
++  entry = gtk_entry_new ();
++  gtk_entry_set_width_chars (GTK_ENTRY (entry), 32);
++  gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
++  gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
++  gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
++  gtk_widget_show_all (hbox);
++
++  gtk_widget_grab_focus (entry);
++  gtk_entry_set_text (GTK_ENTRY (entry), terminal_screen_get_user_title (priv->active_screen));
++  gtk_editable_select_region (GTK_EDITABLE (entry), 0, -1);
++  g_object_set_data (G_OBJECT (dialog), "title-entry", entry);
++
++  gtk_window_present (GTK_WINDOW (dialog));
++}
++
++static void
+ action_reset_cb (GSimpleAction *action,
+                  GVariant *parameter,
+                  gpointer user_data)
+@@ -2086,6 +2188,7 @@
+     { "paste-uris",          action_paste_uris_cb,       NULL,   NULL, NULL },
+     { "reset",               action_reset_cb,            "b",    NULL, NULL },
+     { "select-all",          action_select_all_cb,       NULL,   NULL, NULL },
++    { "set-title",           action_set_title_cb,        NULL,   NULL, NULL },
+     { "size-to",             action_size_to_cb,          "(uu)", NULL, NULL },
+     { "tab-detach",          action_tab_detach_cb,       NULL,   NULL, NULL },
+     { "tab-move-left",       action_tab_move_left_cb,    NULL,   NULL, NULL },
+@@ -2446,8 +2549,7 @@
+     return;
+ 
+   title = terminal_screen_get_title (screen);
+-  gtk_window_set_title (GTK_WINDOW (window),
+-                        title && title[0] ? title : _("Terminal"));
++  gtk_window_set_title (GTK_WINDOW (window), title);
+ }
+ 
+ static void

@@ -10,7 +10,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Terminal/"
 
 LICENSE="GPL-3+"
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="~*"
 
 IUSE="debug +deprecated-transparency +gnome-shell +nautilus vanilla-hotkeys +vanilla-icon vanilla-notify vanilla-open-terminal"
 
@@ -51,7 +51,7 @@ src_prepare() {
 		# From Fedora:
 		# 	https://src.fedoraproject.org/rpms/gnome-terminal/tree/f32
 		eapply "${FILESDIR}"/${PN}-3.28.1-build-dont-treat-warnings-as-errors.patch
-		eapply "${FILESDIR}"/${PN}-3.36.0-open-title-transparency.patch
+		eapply "${FILESDIR}"/${PN}-3.36.1.1-transparency.patch
 
 		# From GNOME:
 		# 	https://gitlab.gnome.org/GNOME/gnome-terminal/commit/b3c270b3612acd45f309521cf1167e1abd561c09
@@ -60,12 +60,12 @@ src_prepare() {
 		if ! use vanilla-notify; then
 			# From Fedora:
 			# 	https://src.fedoraproject.org/rpms/gnome-terminal/tree/f32
-			eapply "${FILESDIR}"/${PN}-3.36.0-notify-rebased.patch
+			eapply "${FILESDIR}"/${PN}-3.36.1.1-open-notify-title-rebased.patch
 		fi
 	elif ! use vanilla-notify; then
 		# From Fedora:
 		# 	https://src.fedoraproject.org/rpms/gnome-terminal/tree/f32
-		eapply "${FILESDIR}"/${PN}-3.36.0-notify.patch
+		eapply "${FILESDIR}"/${PN}-3.36.1.1-open-notify-title.patch
 	fi
 
 	if ! use vanilla-hotkeys; then

@@ -64,6 +64,7 @@ gnome-extra/gnome-shell-extensions::gentoo
 gnome-extra/gnome-shell-frippery::gentoo
 gnome-extra/gnome-software::gentoo
 gnome-extra/gnome-user-docs::gentoo
+gnome-extra/gnome-weather::gentoo
 gnome-extra/yelp-xsl::gentoo
 gnome-extra/yelp::gentoo
 mail-client/evolution::gentoo
