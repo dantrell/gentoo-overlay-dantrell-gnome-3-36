@@ -39,11 +39,11 @@ COMMON_DEPEND="
 	>=app-text/iso-codes-0.49
 	dev-libs/atk
 	gnome-base/dconf
-	>=dev-libs/libical-3.0.2:=
 	x11-libs/libSM
 	x11-libs/libICE
 
 	archive? ( >=app-arch/gnome-autoar-0.1.1[gtk] )
+	bogofilter? ( mail-filter/bogofilter )
 	geolocation? (
 		>=media-libs/libchamplain-0.12:0.12[gtk]
 		>=media-libs/clutter-1.0.0:1.0
@@ -51,7 +51,8 @@ COMMON_DEPEND="
 		>=sci-geosciences/geocode-glib-3.10.0
 		x11-libs/mx:1.0 )
 	ldap? ( >=net-nds/openldap-2:= )
-	spell? ( app-text/gtkspell:3 )
+	spamassassin? ( mail-filter/spamassassin )
+	spell? ( >=app-text/gspell-1.8:= )
 	ssl? (
 		>=dev-libs/nspr-4.6.1:=
 		>=dev-libs/nss-3.11:= )
@@ -69,9 +70,7 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 "
 RDEPEND="${COMMON_DEPEND}
-	bogofilter? ( mail-filter/bogofilter )
 	highlight? ( app-text/highlight )
-	spamassassin? ( mail-filter/spamassassin )
 	!gnome-extra/evolution-exchange
 "
 
@@ -111,7 +110,7 @@ src_configure() {
 		-DENABLE_YTNEF=OFF
 		-DWITH_BOGOFILTER=$(usex bogofilter)
 		-DWITH_SPAMASSASSIN=$(usex spamassassin)
-		-DENABLE_GTKSPELL=$(usex spell)
+		-DENABLE_GSPELL=$(usex spell)
 		-DENABLE_TEXT_HIGHLIGHT=$(usex highlight)
 		-DENABLE_WEATHER=$(usex weather)
 		-DENABLE_CONTACT_MAPS=$(usex geolocation)
