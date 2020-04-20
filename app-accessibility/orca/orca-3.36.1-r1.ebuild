@@ -46,8 +46,8 @@ RDEPEND="${COMMON_DEPEND}
 	x11-libs/pango[introspection]
 "
 DEPEND="${COMMON_DEPEND}
-	>=dev-util/intltool-0.50
 	dev-util/itstool
+	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 "
 #	app-text/yelp-tools
@@ -55,4 +55,9 @@ DEPEND="${COMMON_DEPEND}
 src_configure() {
 	gnome2_src_configure \
 		$(use_with braille liblouis)
+}
+
+src_install() {
+	gnome2_src_install
+	python_optimize
 }
