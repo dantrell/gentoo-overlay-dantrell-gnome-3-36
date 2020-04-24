@@ -61,7 +61,7 @@ RDEPEND="
 	input_devices_wacom? ( >=dev-libs/libwacom-0.13 )
 	introspection? ( >=dev-libs/gobject-introspection-1.42:= )
 	udev? ( >=dev-libs/libgudev-232:= )
-	screencast? ( >=media-video/pipewire-0.2.2:0/0.2 )
+	screencast? ( >=media-video/pipewire-0.3.0:0/0.3 )
 	wayland? (
 		>=dev-libs/libinput-1.4
 		>=dev-libs/wayland-1.13.0
