@@ -9,7 +9,7 @@ HOMEPAGE="https://gitlab.gnome.org/GNOME/mutter"
 
 LICENSE="GPL-2+"
 SLOT="0"
-KEYWORDS="*"
+KEYWORDS="~*"
 
 IUSE="ck debug deprecated-background elogind input_devices_wacom +introspection screencast systemd test +udev +vanilla-mipmapping wayland"
 REQUIRED_USE="
@@ -96,14 +96,6 @@ src_prepare() {
 	# 	https://gitlab.gnome.org/GNOME/mutter/merge_requests/89
 	if ! use vanilla-mipmapping; then
 		eapply "${FILESDIR}"/${PN}-3.32.0-metashapedtexture-disable-mipmapping-emulation.patch
-	fi
-
-	if ! use wayland; then
-		# From Gentoo:
-		# 	https://forums.gentoo.org/viewtopic-p-8106588.html#8106588
-		# 	https://gitlab.gnome.org/GNOME/mutter/issues/797
-		# 	https://gitlab.gnome.org/GNOME/mutter/merge_requests/817
-		eapply "${FILESDIR}"/${PN}-3.34.1-fix-without-gdkwayland.patch
 	fi
 
 	gnome2_src_prepare
