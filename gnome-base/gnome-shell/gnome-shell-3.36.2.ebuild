@@ -25,7 +25,7 @@ COMMON_DEPEND="
 	>=gnome-base/gnome-desktop-3.7.90:3=[introspection]
 	>=dev-libs/glib-2.57.2:2
 	>=dev-libs/gobject-introspection-1.49.1:=
-	>=dev-libs/gjs-1.54.0
+	>=dev-libs/gjs-1.63.2
 	>=x11-libs/gtk+-3.15.0:3[introspection]
 	>=x11-wm/mutter-3.34.0[introspection]
 	>=sys-auth/polkit-0.100[introspection]
