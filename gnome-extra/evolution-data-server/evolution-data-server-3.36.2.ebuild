@@ -10,7 +10,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Evolution"
 
 # Note: explicitly "|| ( LGPL-2 LGPL-3 )", not "LGPL-2+".
 LICENSE="|| ( LGPL-2 LGPL-3 ) BSD Sleepycat"
-SLOT="0/62" # subslot = libcamel-1.2 soname version
+SLOT="0/62-24-20" # subslot = libcamel-1.2/libedataserver-1.2/libebook-1.2.so soname version
 KEYWORDS="*"
 
 IUSE="berkdb +gnome-online-accounts google +gtk gtk-doc +introspection ipv6 ldap kerberos oauth vala +weather"
@@ -23,14 +23,13 @@ RESTRICT="test !test? ( test )"
 
 # gdata-0.17.7 soft required for new gdata_feed_get_next_page_token API to handle more than 100 google tasks
 # berkdb needed only for migrating old addressbook data from <3.13 versions, bug #519512
-# >=libical-3.0.2 present at build-time ensures less memory usage by calendar backend
 RDEPEND="
 	>=app-crypt/gcr-3.4
 	>=app-crypt/libsecret-0.5[crypt]
 	>=dev-db/sqlite-3.7.17:=
 	>=dev-libs/glib-2.46:2
 	>=dev-libs/libgdata-0.10:=
-	>=dev-libs/libical-3.0.2:=[vala?]
+	>=dev-libs/libical-3.0.7:=[introspection?]
 	>=dev-libs/libxml2-2
 	>=dev-libs/nspr-4.4:=
 	>=dev-libs/nss-3.9:=
@@ -60,11 +59,15 @@ RDEPEND="
 DEPEND="${RDEPEND}
 	dev-util/gdbus-codegen
 	dev-util/gperf
-	gtk-doc? ( >=dev-util/gtk-doc-1.14 )
+	gtk-doc? ( >=dev-util/gtk-doc-1.14
+		app-text/docbook-xml-dtd:4.1.2 )
 	>=dev-util/intltool-0.35.5
 	>=sys-devel/gettext-0.18.3
 	virtual/pkgconfig
-	vala? ( $(vala_depend) )
+	vala? ( $(vala_depend)
+		net-libs/libsoup:2.4[vala]
+		dev-libs/libical[vala]
+	)
 "
 
 # global scope PATCHES or DOCS array mustn't be used due to double default_src_prepare call
