@@ -1,6 +1,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="6"
+EAPI="7"
 PYTHON_COMPAT=( python{3_6,3_7,3_8,3_9} )
 
 inherit gnome.org gnome2-utils meson python-single-r1 xdg
@@ -15,7 +15,7 @@ KEYWORDS="*"
 IUSE="gedit gtk-doc +introspection"
 REQUIRED_USE="gedit? ( ${PYTHON_REQUIRED_USE} )"
 
-COMMON_DEPEND="
+DEPEND="
 	>=dev-libs/glib-2.56:2
 	>=x11-libs/gtk+-3.22:3[introspection?]
 	>=net-libs/webkit-gtk-2.20:4[introspection?]
@@ -23,7 +23,7 @@ COMMON_DEPEND="
 	gnome-base/gsettings-desktop-schemas
 	introspection? ( >=dev-libs/gobject-introspection-1.54:= )
 "
-RDEPEND="${COMMON_DEPEND}
+RDEPEND="${DEPEND}
 	gedit? (
 		${PYTHON_DEPS}
 		$(python_gen_cond_dep '
@@ -33,7 +33,7 @@ RDEPEND="${COMMON_DEPEND}
 	)
 "
 # libxml2 required for glib-compile-resources
-DEPEND="${COMMON_DEPEND}
+BDEPEND="
 	${PYTHON_DEPS}
 	dev-libs/libxml2:2
 	dev-util/itstool
@@ -65,7 +65,7 @@ src_configure() {
 
 src_install() {
 	meson_src_install
-	use gedit && python_optimize "${ED%/}"/usr/$(get_libdir)/gedit/plugins
+	use gedit && python_optimize "${ED}"/usr/$(get_libdir)/gedit/plugins
 }
 
 pkg_postinst() {

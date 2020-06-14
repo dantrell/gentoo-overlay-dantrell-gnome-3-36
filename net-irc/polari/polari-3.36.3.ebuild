@@ -1,6 +1,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="6"
+EAPI="7"
 
 inherit gnome.org gnome2-utils meson xdg
 
@@ -15,12 +15,12 @@ IUSE="test"
 
 RESTRICT="!test? ( test )"
 
-COMMON_DEPEND="
+DEPEND="
 	>=dev-libs/glib-2.43.4:2
 	>=x11-libs/gtk+-3.21.6:3[introspection]
 	net-libs/telepathy-glib[introspection]
 	>=dev-libs/gobject-introspection-1.50:=
-	>=dev-libs/gjs-1.53.90
+	>=dev-libs/gjs-1.57.3
 
 	x11-libs/gdk-pixbuf:2[introspection]
 	>=app-text/gspell-1.4.0[introspection]
@@ -29,10 +29,10 @@ COMMON_DEPEND="
 	net-libs/libsoup:2.4[introspection]
 	net-im/telepathy-logger[introspection]
 "
-RDEPEND="${COMMON_DEPEND}
+RDEPEND="${DEPEND}
 	>=net-irc/telepathy-idle-0.2
 "
-DEPEND="${COMMON_DEPEND}
+BDEPEND="
 	dev-libs/appstream-glib
 	dev-libs/libxml2:2
 	dev-util/itstool
@@ -43,12 +43,10 @@ DEPEND="${COMMON_DEPEND}
 
 pkg_postinst() {
 	xdg_pkg_postinst
-	gnome2_icon_cache_update
 	gnome2_schemas_update
 }
 
 pkg_postrm() {
 	xdg_pkg_postrm
-	gnome2_icon_cache_update
 	gnome2_schemas_update
 }
