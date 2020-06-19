@@ -1,6 +1,7 @@
 app-accessibility/accerciser::gentoo
 app-accessibility/at-spi2-core::gentoo
 app-accessibility/orca::gentoo
+app-arch/file-roller::gentoo
 app-crypt/gcr::gentoo
 app-crypt/seahorse::gentoo
 app-editors/gedit-plugins::gentoo
@@ -58,6 +59,7 @@ gnome-extra/gnome-boxes::gentoo
 gnome-extra/gnome-calculator::gentoo
 gnome-extra/gnome-calendar::gentoo
 gnome-extra/gnome-clocks::gentoo
+gnome-extra/gnome-color-manager::gentoo
 gnome-extra/gnome-contacts::gentoo
 gnome-extra/gnome-getting-started-docs::gentoo
 gnome-extra/gnome-shell-extensions::gentoo
@@ -81,6 +83,7 @@ net-libs/libsoup::gentoo
 sci-geosciences/gnome-maps::gentoo
 sys-apps/gnome-disk-utility::gentoo
 www-client/epiphany::gentoo
+x11-libs/libwnck::gentoo
 x11-libs/vte::gentoo
 x11-misc/gpaste::gentoo
 x11-terms/gnome-terminal::gentoo

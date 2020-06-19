@@ -9,7 +9,7 @@ HOMEPAGE="https://help.gnome.org/users/gnome-system-monitor/stable/"
 
 LICENSE="GPL-2+"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 
 IUSE="systemd X"
 
