@@ -6,7 +6,6 @@ inherit gnome.org gnome2-utils meson vala xdg
 
 DESCRIPTION="Fit falling blocks together"
 HOMEPAGE="https://wiki.gnome.org/Apps/Quadrapassel"
-SRC_URI="https://gitlab.gnome.org/GNOME/${PN}/-/archive/${PV}/${P}.tar.bz2"
 
 LICENSE="GPL-2+ CC-BY-SA-3.0"
 SLOT="0"
