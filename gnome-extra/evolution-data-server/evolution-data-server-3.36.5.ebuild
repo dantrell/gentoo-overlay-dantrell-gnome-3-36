@@ -33,7 +33,7 @@ RDEPEND="
 	>=dev-libs/libxml2-2
 	>=dev-libs/nspr-4.4:=
 	>=dev-libs/nss-3.9:=
-	>=net-libs/libsoup-2.42:2.4
+	>=net-libs/libsoup-2.58:2.4
 
 	dev-libs/icu:=
 	sys-libs/zlib:=
@@ -78,6 +78,8 @@ src_prepare() {
 	use vala && vala_src_prepare
 	cmake-utils_src_prepare
 	gnome2_src_prepare
+
+	eapply "${FILESDIR}"/${PN}-3.36.5-gtk-doc-1.32-compat.patch
 }
 
 src_configure() {
@@ -85,6 +87,7 @@ src_configure() {
 	# so include the right dir in CPPFLAGS
 	use berkdb && append-cppflags "-I$(db_includedir)"
 
+	# phonenumber does not exist in tree
 	local mycmakeargs=(
 		-DSYSCONF_INSTALL_DIR="${EPREFIX}"/etc
 		-DENABLE_GTK_DOC=$(usex gtk-doc)
