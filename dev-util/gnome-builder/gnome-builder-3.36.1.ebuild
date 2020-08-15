@@ -59,7 +59,7 @@ RDEPEND="
 	${PYTHON_DEPS}
 	clang? ( sys-devel/clang:= )
 	devhelp? ( >=dev-util/devhelp-3.25.1:= )
-	glade? ( dev-util/glade )
+	glade? ( >=dev-util/glade-3.22.0:3.10= )
 	spell? (
 		>=app-text/gspell-1.2.0
 		>=app-text/enchant-2:2=
