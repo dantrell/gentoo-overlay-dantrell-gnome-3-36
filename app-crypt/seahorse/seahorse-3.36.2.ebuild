@@ -17,9 +17,9 @@ RDEPEND="
 	>=dev-libs/glib-2.44:2
 	>=app-crypt/gcr-3.11.91:=
 	>=app-crypt/gpgme-1.7.0
-	>=gui-libs/libhandy-0.0.12:0.0=
 	>=x11-libs/gtk+-3.22.0:3
 	>=app-crypt/gnupg-2.0.12
+	>=gui-libs/libhandy-0.0.12:0.0=
 	>=app-crypt/libsecret-0.16
 	dev-libs/libpwquality
 	net-misc/openssh
@@ -31,12 +31,16 @@ DEPEND="${RDEPEND}
 	$(vala_depend)
 	dev-libs/appstream-glib
 	dev-libs/libxml2:2
+	dev-libs/libxslt
+	app-text/docbook-xml-dtd:4.2
+	app-text/docbook-xsl-stylesheets
 	dev-util/gdbus-codegen
 	dev-util/itstool
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 	app-crypt/gcr[vala(+)]
 	app-crypt/libsecret[vala]
+	gui-libs/libhandy:0.0[vala]
 "
 
 src_prepare() {
@@ -54,6 +58,7 @@ src_configure() {
 		-Dhkp-support=true
 		$(meson_use ldap ldap-support)
 		$(meson_use zeroconf key-sharing)
+		-Dmanpage=true
 	)
 	meson_src_configure
 }
