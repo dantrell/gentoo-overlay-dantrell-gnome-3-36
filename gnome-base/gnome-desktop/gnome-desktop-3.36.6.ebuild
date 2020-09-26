@@ -9,7 +9,7 @@ HOMEPAGE="https://gitlab.gnome.org/GNOME/gnome-desktop"
 
 LICENSE="GPL-2+ FDL-1.1+ LGPL-2+"
 SLOT="3/17" # subslot = libgnome-desktop-3 soname version
-KEYWORDS="*"
+KEYWORDS="~*"
 
 IUSE="debug doc gtk-doc +introspection udev vanilla-thumbnailer"
 
@@ -47,7 +47,7 @@ src_prepare() {
 	if ! use vanilla-thumbnailer; then
 		# From GNOME:
 		# 	https://gitlab.gnome.org/GNOME/gnome-desktop/commit/8b1db18aa75c2684b513481088b4e289b5c8ed92
-		eapply "${FILESDIR}"/${PN}-3.34.0-dont-sandbox-thumbnailers-on-linux.patch
+		eapply "${FILESDIR}"/${PN}-3.36.6-dont-sandbox-thumbnailers-on-linux.patch
 	fi
 
 	gnome2_src_prepare

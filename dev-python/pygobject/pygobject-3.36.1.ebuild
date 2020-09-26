@@ -1,12 +1,13 @@
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="6"
+EAPI="7"
+
 PYTHON_COMPAT=( python{2_7,3_6,3_7,3_8,3_9} )
 
 inherit gnome.org meson python-r1 virtualx xdg
 
 DESCRIPTION="Python bindings for GObject Introspection"
-HOMEPAGE="https://wiki.gnome.org/Projects/PyGObject"
+HOMEPAGE="https://pygobject.readthedocs.io/"
 
 LICENSE="LGPL-2.1+"
 SLOT="3"
@@ -26,20 +27,25 @@ RDEPEND="${PYTHON_DEPS}
 		x11-libs/cairo[glib] )
 "
 DEPEND="${RDEPEND}
-	virtual/pkgconfig
-	cairo? ( x11-libs/cairo[glib] )
 	test? (
-		dev-libs/atk[introspection]
-		dev-python/pytest[${PYTHON_USEDEP}]
-		x11-libs/gdk-pixbuf:2[introspection,jpeg]
-		x11-libs/gtk+:3[introspection]
-		x11-libs/pango[introspection] )
+		$(python_gen_cond_dep '
+			dev-libs/atk[introspection]
+			dev-python/pytest[${PYTHON_USEDEP}]
+			x11-libs/gdk-pixbuf:2[introspection,jpeg]
+			x11-libs/gtk+:3[introspection]
+			x11-libs/pango[introspection]
+		' -3)
+	)
+"
+BDEPEND="
+	virtual/pkgconfig
 "
 
 src_configure() {
 	configuring() {
 		meson_src_configure \
 			$(meson_use cairo pycairo) \
+			$(meson_use test tests) \
 			-Dpython="${EPYTHON}"
 	}
 
@@ -55,6 +61,11 @@ src_test() {
 	local -x GIO_USE_VOLUME_MONITOR="unix" # prevent udisks-related failures in chroots, bug #449484
 
 	testing() {
+		if ! python_is_python3; then
+			einfo "Skipping tests on Python 2 to unblock deps"
+			return
+		fi
+
 		local -x XDG_CACHE_HOME="${T}/${EPYTHON}"
 		meson_src_test || die "test failed for ${EPYTHON}"
 	}

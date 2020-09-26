@@ -2,8 +2,9 @@
 
 EAPI="6"
 GNOME2_LA_PUNT="yes"
+PYTHON_COMPAT=( python{3_6,3_7,3_8,3_9} )
 
-inherit fcaps gnome2 pam virtualx
+inherit fcaps gnome2 pam python-any-r1 virtualx
 
 DESCRIPTION="Password and keyring managing daemon"
 HOMEPAGE="https://wiki.gnome.org/Projects/GnomeKeyring"
@@ -12,9 +13,9 @@ LICENSE="GPL-2+ LGPL-2+"
 SLOT="0"
 KEYWORDS="*"
 
-IUSE="+caps pam selinux +ssh-agent"
+IUSE="+caps pam selinux +ssh-agent test"
 
-RESTRICT="test"
+RESTRICT="!test? ( test )"
 
 # Replace gkd gpg-agent with pinentry[gnome-keyring] one, bug #547456
 RDEPEND="
@@ -34,8 +35,13 @@ DEPEND="${RDEPEND}
 	dev-libs/libxslt
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
+	test? ( ${PYTHON_DEPS} )
 "
 PDEPEND="app-crypt/pinentry[gnome-keyring]" #570512
+
+pkg_setup() {
+	use test && python-any-r1_pkg_setup
+}
 
 src_prepare() {
 	# Disable stupid CFLAGS with debug enabled
@@ -54,6 +60,13 @@ src_configure() {
 		$(use_enable selinux) \
 		$(use_enable ssh-agent) \
 		--enable-doc
+}
+
+src_test() {
+	# Needs dbus-run-session to not get:
+	# ERROR: test-dbus-search process failed: -6
+	 "${EROOT}${GLIB_COMPILE_SCHEMAS}" --allow-any-name "${S}/schema" || die
+	 GSETTINGS_SCHEMA_DIR="${S}/schema" virtx dbus-run-session emake check
 }
 
 pkg_postinst() {
