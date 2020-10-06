@@ -5,4 +5,10 @@
 	<email>gnome@gentoo.org</email>
 	<name>Gentoo GNOME Desktop</name>
 </maintainer>
+<use>
+	<flag name="latexmk">Install <pkg>dev-tex/latexmk</pkg> (used by default
+		for the build tools)</flag>
+	<flag name="rubber">Install <pkg>dev-tex/rubber</pkg> (can be used for the
+		build tools)</flag>
+</use>
 </pkgmetadata>
