@@ -102,7 +102,7 @@ RDEPEND="${COMMON_DEPEND}
 "
 # avoid circular dependency, see bug #546134
 PDEPEND="
-	>=gnome-base/gdm-3.5[introspection]
+	>=gnome-base/gdm-3.5[introspection(+)]
 	>=gnome-base/gnome-control-center-3.26[bluetooth(+)?,networkmanager(+)?]
 "
 DEPEND="${COMMON_DEPEND}
