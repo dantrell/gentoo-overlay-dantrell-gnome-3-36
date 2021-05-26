@@ -1,7 +1,7 @@
 diff '--exclude=.git' -urN a/meson.build b/meson.build
---- a/meson.build	2020-03-06 19:17:04.000000000 -0600
-+++ b/meson.build	2020-03-22 06:04:13.067973674 -0500
-@@ -117,13 +117,11 @@
+--- a/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/meson.build	2021-05-26 12:38:06.396911371 -0500
+@@ -119,13 +119,11 @@
  pulse_req_version = '>= 2.0'
  
  accounts_dep = dependency('accountsservice', version: '>= 0.6.39')
@@ -15,7 +15,7 @@ diff '--exclude=.git' -urN a/meson.build b/meson.build
  gsettings_desktop_dep = dependency('gsettings-desktop-schemas', version: '>= 3.31.0')
  libxml_dep = dependency('libxml-2.0')
  polkit_gobject_dep = dependency('polkit-gobject-1', version: '>= 0.114')
-@@ -147,25 +145,30 @@
+@@ -149,29 +147,36 @@
    dependency('gtk+-3.0', version: '>= 3.22.20')
  ]
  
@@ -55,16 +55,26 @@ diff '--exclude=.git' -urN a/meson.build b/meson.build
 -foreach header: check_headers
 -  assert(cc.has_header(header[1], args: cups_cflags), 'CUPS headers not found: ' + header[1])
 -endforeach
+-
+-config_h.set10('HAVE_CUPS_HTTPCONNECT2',
+-               cc.has_function('httpConnect2', dependencies: cups_dep),
+-               description: 'Define if httpConnect2() is available in CUPS')
 +  foreach header: check_headers
 +    assert(cc.has_header(header[1], args: cups_cflags), 'CUPS headers not found: ' + header[1])
 +  endforeach
 +endif
 +config_h.set('BUILD_PRINTERS', enable_cups,
 +             description: 'Defined if cups support is enabled')
++
++if enable_cups
++  config_h.set10('HAVE_CUPS_HTTPCONNECT2',
++                 cc.has_function('httpConnect2', dependencies: cups_dep),
++                 description: 'Define if httpConnect2() is available in CUPS')
++endif
  
- config_h.set10('HAVE_CUPS_HTTPCONNECT2',
-                cc.has_function('httpConnect2', dependencies: cups_dep),
-@@ -182,6 +185,27 @@
+ # Optional dependency for the user accounts panel
+ enable_cheese = get_option('cheese')
+@@ -184,6 +189,27 @@
  config_h.set('HAVE_CHEESE', enable_cheese,
               description: 'Define to 1 to enable cheese webcam support')
  
@@ -92,7 +102,7 @@ diff '--exclude=.git' -urN a/meson.build b/meson.build
  # IBus support
  enable_ibus = get_option('ibus')
  if enable_ibus
-@@ -206,43 +230,53 @@
+@@ -208,43 +234,53 @@
               description: 'Define to 1 if Snap support is enabled')
  
  if host_is_linux
@@ -180,7 +190,7 @@ diff '--exclude=.git' -urN a/meson.build b/meson.build
  
  gnome = import('gnome')
  i18n = import('i18n')
-@@ -286,16 +320,22 @@
+@@ -288,16 +324,22 @@
  output += '\n        ' + meson.project_name() + ' - ' + meson.project_version() + '\n'
  output += '    ===================================\n'
  output += ' Options \n'
@@ -214,8 +224,8 @@ diff '--exclude=.git' -urN a/meson.build b/meson.build
  
  message(output)
 diff '--exclude=.git' -urN a/meson_options.txt b/meson_options.txt
---- a/meson_options.txt	2020-03-06 19:17:04.000000000 -0600
-+++ b/meson_options.txt	2020-03-22 05:58:04.429718193 -0500
+--- a/meson_options.txt	2020-11-19 18:57:42.000000000 -0600
++++ b/meson_options.txt	2021-05-26 12:32:03.611522458 -0500
 @@ -1,9 +1,19 @@
 +option('bluetooth', type: 'boolean', value: true, description: 'build with GNOME Bluetooth support')
  option('cheese', type: 'boolean', value: true, description: 'build with cheese webcam support')
@@ -237,8 +247,8 @@ diff '--exclude=.git' -urN a/meson_options.txt b/meson_options.txt
  option('wayland', type: 'boolean', value: true, description: 'build with Wayland support')
  option('profile', type: 'combo', choices: ['default','development'], value: 'default')
 diff '--exclude=.git' -urN a/panels/background/bg-pictures-source.c b/panels/background/bg-pictures-source.c
---- a/panels/background/bg-pictures-source.c	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/background/bg-pictures-source.c	2020-03-22 05:44:36.515529241 -0500
+--- a/panels/background/bg-pictures-source.c	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/background/bg-pictures-source.c	2021-05-26 12:32:03.612522453 -0500
 @@ -23,13 +23,17 @@
  
  #include "bg-pictures-source.h"
@@ -344,8 +354,8 @@ diff '--exclude=.git' -urN a/panels/background/bg-pictures-source.c b/panels/bac
  
  BgPicturesSource *
 diff '--exclude=.git' -urN a/panels/background/meson.build b/panels/background/meson.build
---- a/panels/background/meson.build	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/background/meson.build	2020-03-22 05:44:36.515529241 -0500
+--- a/panels/background/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/background/meson.build	2021-05-26 12:32:03.612522453 -0500
 @@ -81,7 +81,6 @@
    'bg-source.c',
    'bg-wallpapers-source.c',
@@ -380,8 +390,8 @@ diff '--exclude=.git' -urN a/panels/background/meson.build b/panels/background/m
    '-DDATADIR="@0@"'.format(control_center_datadir),
    '-DGNOME_DESKTOP_USE_UNSTABLE_API'
 diff '--exclude=.git' -urN a/panels/bluetooth/meson.build b/panels/bluetooth/meson.build
---- a/panels/bluetooth/meson.build	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/bluetooth/meson.build	2020-03-22 05:44:36.515529241 -0500
+--- a/panels/bluetooth/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/bluetooth/meson.build	2021-05-26 12:32:03.612522453 -0500
 @@ -29,7 +29,13 @@
    export: true
  )
@@ -398,8 +408,8 @@ diff '--exclude=.git' -urN a/panels/bluetooth/meson.build b/panels/bluetooth/mes
  panels_libs += static_library(
    cappletname,
 diff '--exclude=.git' -urN a/panels/color/meson.build b/panels/color/meson.build
---- a/panels/color/meson.build	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/color/meson.build	2020-03-22 05:44:36.515529241 -0500
+--- a/panels/color/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/color/meson.build	2021-05-26 12:32:03.612522453 -0500
 @@ -40,13 +40,18 @@
  )
  
@@ -422,8 +432,8 @@ diff '--exclude=.git' -urN a/panels/color/meson.build b/panels/color/meson.build
    '-DBINDIR="@0@"'.format(control_center_bindir)
  ]
 diff '--exclude=.git' -urN a/panels/display/cc-display-panel.c b/panels/display/cc-display-panel.c
---- a/panels/display/cc-display-panel.c	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/display/cc-display-panel.c	2020-03-22 05:44:36.515529241 -0500
+--- a/panels/display/cc-display-panel.c	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/display/cc-display-panel.c	2021-05-26 12:32:03.612522453 -0500
 @@ -18,6 +18,8 @@
   *
   */
@@ -511,8 +521,8 @@ diff '--exclude=.git' -urN a/panels/display/cc-display-panel.c b/panels/display/
    gtk_widget_class_bind_template_callback (widget_class, on_output_selection_combo_changed_cb);
    gtk_widget_class_bind_template_callback (widget_class, on_output_selection_two_toggled_cb);
 diff '--exclude=.git' -urN a/panels/display/meson.build b/panels/display/meson.build
---- a/panels/display/meson.build	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/display/meson.build	2020-03-22 05:44:36.515529241 -0500
+--- a/panels/display/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/display/meson.build	2021-05-26 12:32:03.612522453 -0500
 @@ -25,15 +25,25 @@
    'cc-display-config-manager-dbus.c',
    'cc-display-config-manager.c',
@@ -561,8 +571,8 @@ diff '--exclude=.git' -urN a/panels/display/meson.build b/panels/display/meson.b
    '-DDATADIR="@0@"'.format(control_center_datadir)
  ]
 diff '--exclude=.git' -urN a/panels/meson.build b/panels/meson.build
---- a/panels/meson.build	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/meson.build	2020-03-22 05:54:39.801684250 -0500
+--- a/panels/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/meson.build	2021-05-26 12:32:03.612522453 -0500
 @@ -4,7 +4,6 @@
    'applications',
    'background',
@@ -646,8 +656,8 @@ diff '--exclude=.git' -urN a/panels/meson.build b/panels/meson.build
  panels_libs = []
  foreach cappletname: panels
 diff '--exclude=.git' -urN a/panels/network/meson.build b/panels/network/meson.build
---- a/panels/network/meson.build	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/network/meson.build	2020-03-22 06:11:23.888928654 -0500
+--- a/panels/network/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/network/meson.build	2021-05-26 12:32:03.612522453 -0500
 @@ -1,10 +1,16 @@
 -deps = common_deps + network_manager_deps + [
 +deps = common_deps + [
@@ -667,8 +677,8 @@ diff '--exclude=.git' -urN a/panels/network/meson.build b/panels/network/meson.b
  subdir('connection-editor')
  
 diff '--exclude=.git' -urN a/panels/online-accounts/meson.build b/panels/online-accounts/meson.build
---- a/panels/online-accounts/meson.build	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/online-accounts/meson.build	2020-03-22 05:44:36.516529236 -0500
+--- a/panels/online-accounts/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/online-accounts/meson.build	2021-05-26 12:32:03.612522453 -0500
 @@ -29,10 +29,14 @@
    export: true
  )
@@ -689,8 +699,8 @@ diff '--exclude=.git' -urN a/panels/online-accounts/meson.build b/panels/online-
  panels_libs += static_library(
    cappletname,
 diff '--exclude=.git' -urN a/panels/power/cc-power-panel.c b/panels/power/cc-power-panel.c
---- a/panels/power/cc-power-panel.c	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/power/cc-power-panel.c	2020-03-22 05:44:36.516529236 -0500
+--- a/panels/power/cc-power-panel.c	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/power/cc-power-panel.c	2021-05-26 12:32:03.613522449 -0500
 @@ -1989,7 +1989,7 @@
                      G_CALLBACK (wifi_switch_changed), self);
  #endif
@@ -710,8 +720,8 @@ diff '--exclude=.git' -urN a/panels/power/cc-power-panel.c b/panels/power/cc-pow
  
  #define NEVER 0
 diff '--exclude=.git' -urN a/panels/power/meson.build b/panels/power/meson.build
---- a/panels/power/meson.build	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/power/meson.build	2020-03-22 05:44:36.516529236 -0500
+--- a/panels/power/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/power/meson.build	2021-05-26 12:32:03.613522449 -0500
 @@ -34,11 +34,11 @@
    upower_glib_dep
  ]
@@ -726,9 +736,31 @@ diff '--exclude=.git' -urN a/panels/power/meson.build b/panels/power/meson.build
    deps += gnome_bluetooth_dep
  endif
  
+diff '--exclude=.git' -urN a/panels/printers/meson.build b/panels/printers/meson.build
+--- a/panels/printers/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/printers/meson.build	2021-05-26 12:34:48.552794660 -0500
+@@ -58,12 +58,17 @@
+ )
+ 
+ deps = common_deps + [
+-  cups_dep,
+   m_dep,
+   polkit_gobject_dep,
+   dependency('smbclient')
+ ]
+ 
++if enable_cups
++  deps += [
++    cups_dep
++  ]
++endif
++
+ printers_panel_lib = static_library(
+   cappletname,
+   sources: sources,
 diff '--exclude=.git' -urN a/panels/user-accounts/cc-realm-manager.c b/panels/user-accounts/cc-realm-manager.c
---- a/panels/user-accounts/cc-realm-manager.c	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/user-accounts/cc-realm-manager.c	2020-03-22 05:44:36.516529236 -0500
+--- a/panels/user-accounts/cc-realm-manager.c	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/user-accounts/cc-realm-manager.c	2021-05-26 12:32:03.613522449 -0500
 @@ -22,7 +22,9 @@
  
  #include "cc-realm-manager.h"
@@ -775,8 +807,8 @@ diff '--exclude=.git' -urN a/panels/user-accounts/cc-realm-manager.c b/panels/us
  
  void
 diff '--exclude=.git' -urN a/panels/user-accounts/meson.build b/panels/user-accounts/meson.build
---- a/panels/user-accounts/meson.build	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/user-accounts/meson.build	2020-03-22 05:44:36.516529236 -0500
+--- a/panels/user-accounts/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/user-accounts/meson.build	2021-05-26 12:32:03.613522449 -0500
 @@ -156,21 +156,31 @@
    'um-fingerprint-dialog.c',
  )
@@ -814,8 +846,8 @@ diff '--exclude=.git' -urN a/panels/user-accounts/meson.build b/panels/user-acco
    deps += cheese_deps
  endif
 diff '--exclude=.git' -urN a/panels/wacom/meson.build b/panels/wacom/meson.build
---- a/panels/wacom/meson.build	2020-03-06 19:17:04.000000000 -0600
-+++ b/panels/wacom/meson.build	2020-03-22 05:44:36.516529236 -0500
+--- a/panels/wacom/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/panels/wacom/meson.build	2021-05-26 12:32:03.613522449 -0500
 @@ -1,10 +1,16 @@
 -deps = wacom_deps + [
 +deps = [
@@ -835,8 +867,8 @@ diff '--exclude=.git' -urN a/panels/wacom/meson.build b/panels/wacom/meson.build
  
  test_cflags = cflags + ['-DFAKE_AREA']
 diff '--exclude=.git' -urN a/shell/cc-panel-loader.c b/shell/cc-panel-loader.c
---- a/shell/cc-panel-loader.c	2020-03-06 19:17:05.000000000 -0600
-+++ b/shell/cc-panel-loader.c	2020-03-22 06:15:30.581754858 -0500
+--- a/shell/cc-panel-loader.c	2020-11-19 18:57:42.000000000 -0600
++++ b/shell/cc-panel-loader.c	2021-05-26 12:32:03.613522449 -0500
 @@ -36,7 +36,9 @@
  #ifdef BUILD_BLUETOOTH
  extern GType cc_bluetooth_panel_get_type (void);
@@ -898,8 +930,8 @@ diff '--exclude=.git' -urN a/shell/cc-panel-loader.c b/shell/cc-panel-loader.c
  #ifdef BUILD_THUNDERBOLT
    PANEL_TYPE("thunderbolt",      cc_bolt_panel_get_type,                 NULL),
 diff '--exclude=.git' -urN a/shell/meson.build b/shell/meson.build
---- a/shell/meson.build	2020-03-06 19:17:05.000000000 -0600
-+++ b/shell/meson.build	2020-03-22 05:44:36.516529236 -0500
+--- a/shell/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/shell/meson.build	2021-05-26 12:32:03.613522449 -0500
 @@ -119,7 +119,7 @@
    shell_deps += cheese_deps
  endif
@@ -910,8 +942,8 @@ diff '--exclude=.git' -urN a/shell/meson.build b/shell/meson.build
  endif
  
 diff '--exclude=.git' -urN a/tests/meson.build b/tests/meson.build
---- a/tests/meson.build	2020-03-06 19:17:05.000000000 -0600
-+++ b/tests/meson.build	2020-03-22 05:44:36.516529236 -0500
+--- a/tests/meson.build	2020-11-19 18:57:42.000000000 -0600
++++ b/tests/meson.build	2021-05-26 12:32:03.613522449 -0500
 @@ -1,10 +1,12 @@
  subdir('common')
  #subdir('datetime')
