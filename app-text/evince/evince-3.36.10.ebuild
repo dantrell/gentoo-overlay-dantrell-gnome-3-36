@@ -1,7 +1,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="6"
-GNOME2_LA_PUNT="yes"
+EAPI="7"
 GNOME2_EAUTORECONF="yes"
 
 inherit gnome2 systemd
@@ -18,16 +17,16 @@ IUSE="djvu dvi gstreamer gnome gnome-keyring +introspection nautilus nsplugin po
 
 # atk used in libview
 # bundles unarr
-COMMON_DEPEND="
+DEPEND="
 	dev-libs/atk
-	>=dev-libs/glib-2.36:2[dbus]
+	>=dev-libs/glib-2.38.0:2
 	>=dev-libs/libxml2-2.5:2
 	sys-libs/zlib:=
 	>=x11-libs/gdk-pixbuf-2.36.5:2
 	>=x11-libs/gtk+-3.22.0:3[introspection?]
 	gnome-base/gsettings-desktop-schemas
 	>=x11-libs/cairo-1.10:=
-	>=app-text/poppler-0.33[cairo]
+	>=app-text/poppler-0.76.0[cairo]
 	>=app-arch/libarchive-3.2.0
 	djvu? ( >=app-text/djvu-3.5.22:= )
 	dvi? (
@@ -41,27 +40,26 @@ COMMON_DEPEND="
 	gnome? ( gnome-base/gnome-desktop:3= )
 	gnome-keyring? ( >=app-crypt/libsecret-0.5 )
 	introspection? ( >=dev-libs/gobject-introspection-1:= )
-	nautilus? ( >=gnome-base/nautilus-2.91.4 )
+	nautilus? ( >=gnome-base/nautilus-3.28.0 )
 	postscript? ( >=app-text/libspectre-0.2:= )
 	spell? ( >=app-text/gspell-1.6.0:= )
 	tiff? ( >=media-libs/tiff-3.6:0= )
 	xps? ( >=app-text/libgxps-0.2.1:= )
 "
-RDEPEND="${COMMON_DEPEND}
+RDEPEND="${DEPEND}
 	gnome-base/gvfs
 	gnome-base/librsvg
 	|| (
 		>=x11-themes/adwaita-icon-theme-2.17.1
 		>=x11-themes/hicolor-icon-theme-0.10 )
 "
-DEPEND="${COMMON_DEPEND}
+BDEPEND="
 	app-text/docbook-xml-dtd:4.3
 	dev-libs/appstream-glib
 	dev-util/gdbus-codegen
 	>=dev-util/gtk-doc-am-1.13
-	>=dev-util/intltool-0.35
 	dev-util/itstool
-	sys-devel/gettext
+	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 	app-text/yelp-tools
 "

@@ -16,7 +16,7 @@ IUSE="test"
 RESTRICT="!test? ( test )"
 
 DEPEND="
-	>=dev-libs/glib-2.56.0:2
+	>=dev-libs/glib-2.61.2:2
 	>=x11-libs/gtk+-3.24.0:3
 	>=dev-libs/nettle-3.4:=
 	>=net-libs/webkit-gtk-2.27.4:4=
@@ -24,13 +24,12 @@ DEPEND="
 	>=app-crypt/gcr-3.5.5:=[gtk]
 	>=x11-libs/gdk-pixbuf-2.36.5:2
 	gnome-base/gsettings-desktop-schemas
-	dev-libs/icu:=
 	>=app-text/iso-codes-0.35
 	>=dev-libs/json-glib-1.2.4
-	>=dev-libs/libdazzle-3.31.90
-	>=gui-libs/libhandy-0.0.9:0.0=
+	>=dev-libs/libdazzle-3.35.3
+	>=gui-libs/libhandy-0.0.10:0.0=
 	>=x11-libs/libnotify-0.5.1
-	>=app-crypt/libsecret-0.19.0
+	>=app-crypt/libsecret-0.19
 	>=net-libs/libsoup-2.48.0:2.4
 	>=dev-libs/libxml2-2.6.12:2
 	dev-db/sqlite:3

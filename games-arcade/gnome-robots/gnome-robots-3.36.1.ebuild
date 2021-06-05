@@ -14,11 +14,11 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="
-	>=x11-libs/gtk+-3.15:3
 	>=dev-libs/glib-2.32:2
-	>=gnome-base/librsvg-2.36.2:2
 	dev-libs/libgnome-games-support:1=
-	>=media-libs/libcanberra-0.26[gtk3]
+	>=media-libs/gsound-1.0.2
+	>=x11-libs/gtk+-3.15:3
+	>=gnome-base/librsvg-2.36.2:2
 "
 DEPEND="${RDEPEND}"
 BDEPEND="

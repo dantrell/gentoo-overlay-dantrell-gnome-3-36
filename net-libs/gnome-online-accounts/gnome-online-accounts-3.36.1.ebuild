@@ -37,14 +37,12 @@ RDEPEND="
 		app-crypt/gcr:0=[gtk]
 		app-crypt/mit-krb5 )
 "
-#	telepathy? ( net-libs/telepathy-glib )
 # goa-daemon can launch gnome-control-center
 PDEPEND="gnome? ( >=gnome-base/gnome-control-center-3.2[gnome-online-accounts(+)] )"
 
 DEPEND="${RDEPEND}
 	vala? ( $(vala_depend) )
 	dev-libs/libxslt
-	>=dev-util/gtk-doc-am-1.3
 	>=dev-util/gdbus-codegen-2.30.0
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
@@ -72,10 +70,10 @@ src_configure() {
 		--enable-lastfm \
 		--enable-media-server \
 		--enable-owncloud \
-		--enable-pocket \
 		--enable-windows-live \
 		$(usex debug --enable-debug=yes ' ') \
 		$(use_enable kerberos) \
+		$(use_enable kerberos fedora) \
 		$(use_enable introspection) \
 		$(use_enable vala)
 }

@@ -16,12 +16,13 @@ IUSE=""
 # Pure introspection dependencies found by grepping imports.gi in ${S}
 RDEPEND="
 	>=dev-libs/glib-2.44.0:2
+	x11-libs/pango[introspection]
 	>=dev-libs/gjs-1.50.0
 	>=dev-libs/gobject-introspection-0.10.1:=
 	>=x11-libs/gtk+-3.22:3[introspection]
 	>=app-misc/geoclue-1.99.3:2.0[introspection]
 	>=dev-libs/libgee-0.16:0.8[introspection]
-	>=dev-libs/folks-0.10
+	>=dev-libs/folks-0.10:=
 	>=sci-geosciences/geocode-glib-3.15.2[introspection]
 	>=media-libs/libchamplain-0.12.14:0.12[gtk,introspection]
 	dev-libs/libxml2:2

@@ -14,10 +14,10 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="
-	>=media-libs/libcanberra-0.26[gtk3]
-	media-libs/cogl:1.0=
 	>=media-libs/clutter-1:1.0
 	>=media-libs/clutter-gtk-0.91.6:1.0
+	media-libs/cogl:1.0=
+	>=media-libs/gsound-1.0.2
 	>=x11-libs/gtk+-3.12.0:3
 	>=dev-libs/libmanette-0.2.0
 	x11-libs/pango
@@ -30,6 +30,7 @@ BDEPEND="
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 	$(vala_depend)
+	media-libs/gsound[vala]
 	dev-libs/libmanette[vala]
 	gnome-base/librsvg:2[vala]
 "

@@ -1,12 +1,13 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="7"
+VALA_MIN_API_VERSION="0.44"
 VALA_MAX_API_VERSION="0.48"
 
 inherit gnome.org gnome2-utils meson vala xdg
 
 DESCRIPTION="Dominate the board in a classic version of Reversi"
-HOMEPAGE="https://wiki.gnome.org/Apps/Iagno"
+HOMEPAGE="https://wiki.gnome.org/Apps/Reversi"
 
 LICENSE="GPL-3+ CC-BY-SA-3.0"
 SLOT="0"
@@ -15,22 +16,27 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="
-	>=media-libs/libcanberra-0.26[gtk3]
-	>=dev-libs/glib-2.40.0:2
-	>=x11-libs/gtk+-3.22.23:3
+	>=dev-libs/glib-2.42.0:2
+	>=media-libs/gsound-1.0.2
+	>=x11-libs/gtk+-3.24.0:3
 	>=gnome-base/librsvg-2.32.0:2
 "
 DEPEND="${RDEPEND}"
 # libxml2:2 needed for glib-compile-resources xml-stripblanks attributes
 BDEPEND="
-	$(vala_depend)
-	gnome-base/librsvg:2[vala]
 	dev-libs/appstream-glib
 	dev-libs/libxml2:2
 	dev-util/itstool
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
+	$(vala_depend)
+	media-libs/gsound[vala]
+	gnome-base/librsvg:2[vala]
 "
+
+PATCHES=(
+	"${FILESDIR}"/${PN}-3.36.4-vala-posix.patch
+)
 
 src_prepare() {
 	xdg_src_prepare

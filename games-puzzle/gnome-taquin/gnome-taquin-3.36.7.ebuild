@@ -15,22 +15,22 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="
-	>=dev-libs/glib-2.40.0:2
+	>=dev-libs/glib-2.42.0:2
+	>=media-libs/gsound-1.0.2
 	>=x11-libs/gtk+-3.22.23:3
 	>=gnome-base/librsvg-2.32.0:2
-	>=media-libs/libcanberra-0.26[gtk3]
 "
 # libxml2+gdk-pixbuf required for glib-compile-resources (xml-stripblanks and to-pixdata)
 DEPEND="${RDEPEND}"
 BDEPEND="
-	$(vala_depend)
-	gnome-base/librsvg:2[vala]
-	dev-libs/appstream-glib
 	dev-libs/libxml2:2
 	dev-util/itstool
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 	x11-libs/gdk-pixbuf:2
+	$(vala_depend)
+	media-libs/gsound[vala]
+	gnome-base/librsvg:2[vala]
 "
 
 src_prepare() {

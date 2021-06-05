@@ -26,6 +26,7 @@ RESTRICT="!test? ( test )"
 
 RDEPEND="
 	>=dev-libs/glib-2.57.2:2
+	>=gnome-base/gsettings-desktop-schemas-3.33.0
 	afp? ( >=dev-libs/libgcrypt-1.2.2:0= )
 	sys-apps/dbus
 	app-crypt/gcr:=
@@ -37,7 +38,7 @@ RDEPEND="
 		>=net-libs/libsoup-2.58.0:2.4 )
 	zeroconf? ( >=net-dns/avahi-0.6[dbus] )
 	udev? ( >=dev-libs/libgudev-147:= )
-	fuse? ( >=sys-fs/fuse-3:3 )
+	fuse? ( >=sys-fs/fuse-3.0.0:3 )
 	udisks? ( >=sys-fs/udisks-1.97:2 )
 	systemd? ( >=sys-apps/systemd-206:0= )
 	elogind? ( >=sys-auth/elogind-229:0= )
@@ -50,14 +51,12 @@ RDEPEND="
 	mtp? (
 		>=dev-libs/libusb-1.0.21
 		>=media-libs/libmtp-1.1.15 )
-	samba? (
-		sys-libs/libunwind:=
-		>=net-fs/samba-4[client] )
+	samba? ( >=net-fs/samba-4[client] )
 	archive? ( app-arch/libarchive:= )
 	cdda? (
 		dev-libs/libcdio:0=
 		>=dev-libs/libcdio-paranoia-0.78.2 )
-	google? ( >=dev-libs/libgdata-0.17.9:=[crypt,gnome-online-accounts] )
+	google? ( >=dev-libs/libgdata-0.17.11:=[crypt,gnome-online-accounts] )
 	gphoto2? ( >=media-libs/libgphoto2-2.5.0:= )
 	nfs? ( >=net-fs/libnfs-1.9.8 )
 	net-misc/openssh
@@ -72,6 +71,10 @@ BDEPEND="
 	virtual/pkgconfig
 	dev-util/gdbus-codegen
 "
+
+PATCHES=(
+	"${FILESDIR}"/libplist-2.2.patch
+)
 
 src_configure() {
 	local enable_logind="false"

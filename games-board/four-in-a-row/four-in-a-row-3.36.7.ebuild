@@ -1,11 +1,12 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="7"
+VALA_MIN_API_VERSION="0.44"
 
 inherit gnome.org gnome2-utils meson vala xdg
 
 DESCRIPTION="Make lines of the same color to win"
-HOMEPAGE="https://wiki.gnome.org/Apps/Four-in-a-row"
+HOMEPAGE="https://wiki.gnome.org/Apps/Four-in-a-row https://gitlab.gnome.org/GNOME/four-in-a-row"
 
 # Code and most themes are GPL-3+, CC-BY-SA-3.0 is user help license in v3.32.0
 LICENSE="GPL-3+ CC-BY-SA-3.0"
@@ -16,17 +17,19 @@ IUSE=""
 
 RDEPEND="
 	>=dev-libs/glib-2.40.0:2
-	>=x11-libs/gtk+-3.13.2:3
+	>=media-libs/gsound-1.0.2
+	>=x11-libs/gtk+-3.22.23:3
 	>=gnome-base/librsvg-2.32.0
-	>=media-libs/libcanberra-0.26[gtk3]
 "
 DEPEND="${RDEPEND}"
 BDEPEND="
-	$(vala_depend)
 	dev-libs/appstream-glib
 	dev-util/itstool
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
+	$(vala_depend)
+	media-libs/gsound[vala]
+	gnome-base/librsvg[vala]
 "
 
 src_prepare() {
