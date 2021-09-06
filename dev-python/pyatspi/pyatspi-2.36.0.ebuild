@@ -16,6 +16,8 @@ KEYWORDS="*"
 IUSE="test"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
+RESTRICT="!test? ( test )"
+
 COMMON_DEPEND="${PYTHON_DEPS}
 	>=dev-libs/atk-2.11.2
 	dev-python/dbus-python[${PYTHON_USEDEP}]
