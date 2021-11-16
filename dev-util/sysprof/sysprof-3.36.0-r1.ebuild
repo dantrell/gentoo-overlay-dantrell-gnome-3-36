@@ -9,7 +9,7 @@ HOMEPAGE="http://sysprof.com/"
 
 LICENSE="GPL-3+ GPL-2+"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 
 IUSE="dbus gtk systemd +unwind"
 
@@ -33,6 +33,17 @@ BDEPEND="
 	>=sys-kernel/linux-headers-2.6.32
 	virtual/pkgconfig
 "
+
+PATCHES=(
+	"${FILESDIR}"/${PN}-3.36.0-fix-32bit-tests-build.patch
+)
+
+src_prepare() {
+	xdg_src_prepare
+	# Work around -Werror=incompatible-pointer-types (GCC 11 default)
+	sed -i meson.build \
+		-e '/Werror=incompatible-pointer-types/d' || die
+}
 
 src_configure() {
 	# -Dwith_sysprofd=host currently unavailable from ebuild
