@@ -11,7 +11,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Boxes"
 
 LICENSE="LGPL-2+ CC-BY-2.0"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 
 IUSE="rdp"
 

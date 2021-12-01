@@ -11,7 +11,7 @@ HOMEPAGE="https://gitlab.gnome.org/GNOME/gcr"
 
 LICENSE="GPL-2+ LGPL-2+"
 SLOT="0/1" # subslot = suffix of libgcr-base-3 and co
-KEYWORDS="~*"
+KEYWORDS="*"
 
 IUSE="gtk gtk-doc +introspection +vala"
 REQUIRED_USE="vala? ( introspection )"

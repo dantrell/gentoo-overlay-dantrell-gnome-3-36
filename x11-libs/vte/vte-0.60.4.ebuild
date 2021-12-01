@@ -12,7 +12,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Terminal/VTE"
 
 LICENSE="LGPL-2+"
 SLOT="2.91"
-KEYWORDS="~*"
+KEYWORDS="*"
 
 IUSE="bidi +crypt debug doc glade +introspection systemd vala vanilla-notify"
 REQUIRED_USE="vala? ( introspection )"
