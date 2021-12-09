@@ -27,7 +27,6 @@ DEPEND="
 
 	virtual/jpeg:0=
 "
-# packagekit? ( >=app-admin/packagekit-base-1.1.5 )
 RDEPEND="${DEPEND}
 	x11-misc/xdg-utils
 "

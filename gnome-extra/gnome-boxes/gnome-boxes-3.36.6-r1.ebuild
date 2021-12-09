@@ -31,7 +31,7 @@ DEPEND="
 	>=app-emulation/libvirt-glib-3.0.0
 	>=dev-libs/libxml2-2.7.8:2
 	>=net-misc/spice-gtk-0.32[gtk3(+),smartcard,usbredir]
-	app-misc/tracker:0/2.0
+	app-misc/tracker:0=
 	>=x11-libs/vte-0.40.2:2.91
 	net-libs/webkit-gtk:4
 
@@ -49,7 +49,7 @@ DEPEND="
 # app-emulation/qemu qemu-img used to convert image to QCOW2 format during copy
 RDEPEND="${DEPEND}
 	app-cdr/cdrtools
-	>=app-misc/tracker-miners-2:0[iso]
+	>=app-misc/tracker-miners-2:0=[iso]
 	app-emulation/spice[smartcard]
 	>=app-emulation/libvirt-0.9.3[libvirtd,qemu]
 	>=app-emulation/qemu-1.3.1[spice,smartcard,usbredir]

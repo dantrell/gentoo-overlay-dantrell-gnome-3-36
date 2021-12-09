@@ -11,7 +11,7 @@ LICENSE="GPL-2+ CC-BY-SA-3.0"
 SLOT="0"
 KEYWORDS="*"
 
-IUSE="libnotify nautilus packagekit"
+IUSE="libnotify nautilus"
 
 # gdk-pixbuf used extensively in the source
 # cairo used in eggtreemultidnd.c
@@ -26,7 +26,6 @@ RDEPEND="
 	x11-libs/pango
 	libnotify? ( >=x11-libs/libnotify-0.4.3:= )
 	nautilus? ( >=gnome-base/nautilus-3[-vanilla-menu-compress] )
-	packagekit? ( app-admin/packagekit-base )
 "
 DEPEND="${RDEPEND}"
 BDEPEND="
@@ -68,7 +67,7 @@ src_prepare() {
 	fi
 
 	# File providing Gentoo package names for various archivers
-	cp -f "${FILESDIR}"/3.32-packages.match data/packages.match || die
+	cp -f "${FILESDIR}"/3.36-packages.match data/packages.match || die
 
 	xdg_src_prepare
 }
@@ -78,7 +77,7 @@ src_configure() {
 		-Drun-in-place=false
 		$(meson_use nautilus nautilus-actions)
 		$(meson_use libnotify notification)
-		$(meson_use packagekit)
+		-Dpackagekit=false
 		-Dlibarchive=true
 	)
 	meson_src_configure

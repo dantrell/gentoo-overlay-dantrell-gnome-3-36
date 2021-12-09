@@ -48,9 +48,9 @@ src_prepare() {
 	fi
 
 	# From GNOME:
-	# 	https://gitlab.gnome.org/GNOME/gnome-terminal/-/commit/dcd77201aade51bab925b8257d79766ca7acd714
-	# 	https://gitlab.gnome.org/GNOME/gnome-terminal/-/commit/5ecb0ac8b0cf97c73b4b18ba74e5a220b420d942
-	# 	https://gitlab.gnome.org/GNOME/gnome-terminal/-/commit/57ea15c4bdf15247f1d403aa24fb18efe23cd8a7
+	# 	https://gitlab.gnome.org/GNOME/gnome-terminal/commit/dcd77201aade51bab925b8257d79766ca7acd714
+	# 	https://gitlab.gnome.org/GNOME/gnome-terminal/commit/5ecb0ac8b0cf97c73b4b18ba74e5a220b420d942
+	# 	https://gitlab.gnome.org/GNOME/gnome-terminal/commit/57ea15c4bdf15247f1d403aa24fb18efe23cd8a7
 	eapply "${FILESDIR}"/${PN}-3.36.2-revert-screen-take-a-ref-to-the-fd-list.patch
 
 	if use deprecated-transparency; then

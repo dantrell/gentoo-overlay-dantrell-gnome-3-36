@@ -31,3 +31,4 @@ unzip=app-arch/unzip
 xz=app-arch/xz-utils
 zip=app-arch/zip
 zoo=app-arch/zoo
+zstd=app-arch/zstd

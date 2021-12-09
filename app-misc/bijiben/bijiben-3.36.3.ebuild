@@ -14,7 +14,7 @@ KEYWORDS="*"
 IUSE=""
 
 DEPEND="
-	>=app-misc/tracker-2:=
+	>=app-misc/tracker-2:0=
 	>=dev-libs/glib-2.53.4:2
 	net-libs/gnome-online-accounts:=
 	>=x11-libs/gtk+-3.19.3:3

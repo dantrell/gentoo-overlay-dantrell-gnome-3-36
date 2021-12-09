@@ -36,6 +36,7 @@ games-puzzle/hitori::gentoo
 games-puzzle/lightsoff::gentoo
 games-puzzle/quadrapassel::gentoo
 gnome-base/dconf-editor::gentoo
+gnome-base/gnome-applets::gentoo
 gnome-base/gnome-control-center::gentoo
 gnome-base/gnome-core-apps::gentoo
 gnome-base/gnome-core-libs::gentoo
@@ -43,6 +44,7 @@ gnome-base/gnome-desktop::gentoo
 gnome-base/gnome-extra-apps::gentoo
 gnome-base/gnome-flashback::gentoo
 gnome-base/gnome-light::gentoo
+gnome-base/gnome-panel::gentoo
 gnome-base/gnome-session::gentoo
 gnome-base/gnome-settings-daemon::gentoo
 gnome-base/gnome-shell::gentoo
