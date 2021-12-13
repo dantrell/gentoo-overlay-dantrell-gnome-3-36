@@ -10,7 +10,6 @@ app-editors/gnome-latex::gentoo
 app-misc/bijiben::gentoo
 app-misc/gnote::gentoo
 app-text/evince::gentoo
-dev-libs/atk::gentoo
 dev-libs/gjs::gentoo
 dev-libs/gobject-introspection-common::gentoo
 dev-libs/gobject-introspection::gentoo
@@ -59,6 +58,7 @@ gnome-extra/gnome-calculator::gentoo
 gnome-extra/gnome-calendar::gentoo
 gnome-extra/gnome-clocks::gentoo
 gnome-extra/gnome-contacts::gentoo
+gnome-extra/gnome-getting-started-docs::gentoo
 gnome-extra/gnome-shell-extensions::gentoo
 gnome-extra/gnome-shell-frippery::gentoo
 gnome-extra/gnome-software::gentoo
