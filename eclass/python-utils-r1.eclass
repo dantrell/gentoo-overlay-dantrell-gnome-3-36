@@ -1,4 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: python-utils-r1.eclass
@@ -17,7 +17,7 @@
 # functions. It can be inherited safely.
 #
 # For more information, please see the Python Guide:
-# https://dev.gentoo.org/~mgorny/python-guide/
+# https://projects.gentoo.org/python/guide/
 
 # NOTE: When dropping support for EAPIs here, we need to update
 # metadata/install-qa-check.d/60python-pyc
@@ -1276,6 +1276,16 @@ build_sphinx() {
 	HTML_DOCS+=( "${dir}/_build/html/." )
 }
 
+# @FUNCTION: _python_check_EPYTHON
+# @INTERNAL
+# @DESCRIPTION:
+# Check if EPYTHON is set, die if not.
+_python_check_EPYTHON() {
+	if [[ -z ${EPYTHON} ]]; then
+		die "EPYTHON unset, invalid call context"
+	fi
+}
+
 # @FUNCTION: epytest
 # @USAGE: [<args>...]
 # @DESCRIPTION:
@@ -1286,7 +1296,7 @@ build_sphinx() {
 epytest() {
 	debug-print-function ${FUNCNAME} "${@}"
 
-	[[ -n ${EPYTHON} ]] || die "EPYTHON unset, invalid call context"
+	_python_check_EPYTHON
 
 	local args=(
 		# verbose progress reporting and tracebacks
@@ -1314,7 +1324,7 @@ epytest() {
 eunittest() {
 	debug-print-function ${FUNCNAME} "${@}"
 
-	[[ -n ${EPYTHON} ]] || die "EPYTHON unset, invalid call context"
+	_python_check_EPYTHON
 
 	set -- "${EPYTHON}" -m unittest_or_fail discover -v "${@}"
 

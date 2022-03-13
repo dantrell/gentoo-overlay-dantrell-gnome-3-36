@@ -24,15 +24,16 @@ DEPEND="
 	>=sys-apps/dbus-1
 	introspection? ( >=dev-libs/gobject-introspection-1.58:= )
 "
-RDEPEND="${DEPEND}
-	app-crypt/gnupg
-"
+RDEPEND="${DEPEND}"
+PDEPEND="app-crypt/gnupg"
 BDEPEND="
 	${PYTHON_DEPS}
 	gtk? ( dev-libs/libxml2:2 )
 	dev-util/gdbus-codegen
-	gtk-doc? ( >=dev-util/gtk-doc-1.9
-		app-text/docbook-xml-dtd:4.1.2 )
+	gtk-doc? (
+		>=dev-util/gtk-doc-1.9
+		app-text/docbook-xml-dtd:4.1.2
+	)
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 	vala? ( $(vala_depend) )
@@ -45,6 +46,9 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-3.36.0-avoid-gnupg-circular-dep.patch
 	"${FILESDIR}"/${PN}-3.36.0-optional-vapi.patch
 	"${FILESDIR}"/${PN}-3.36.0-meson-fix-gtk-doc-without-ui.patch
+	# From Gentoo:
+	# 	https://bugs.gentoo.org/831428
+	"${FILESDIR}"/${PN}-3.40.0-meson-0.61-build.patch
 )
 
 pkg_setup() {
