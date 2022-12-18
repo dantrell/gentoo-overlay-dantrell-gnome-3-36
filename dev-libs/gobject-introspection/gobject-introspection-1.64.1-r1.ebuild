@@ -3,7 +3,7 @@
 EAPI="7"
 
 PYTHON_COMPAT=( python{3_8,3_9,3_10,3_11} )
-PYTHON_REQ_USE="xml"
+PYTHON_REQ_USE="xml(+)"
 
 inherit gnome.org meson python-single-r1 toolchain-funcs xdg
 
@@ -33,7 +33,7 @@ RDEPEND="
 	virtual/pkgconfig
 	${PYTHON_DEPS}
 "
-# Wants real bison, not virtual/yacc
+# Wants real bison, not app-alternatives/yacc
 DEPEND="${RDEPEND}
 	gtk-doc? ( >=dev-util/gtk-doc-1.19
 		app-text/docbook-xml-dtd:4.3

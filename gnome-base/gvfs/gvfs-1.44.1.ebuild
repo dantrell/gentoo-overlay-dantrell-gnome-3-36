@@ -49,7 +49,7 @@ RDEPEND="
 	gnome-keyring? ( app-crypt/libsecret )
 	bluray? ( media-libs/libbluray:= )
 	mtp? (
-		>=dev-libs/libusb-1.0.21
+		virtual/libusb:1
 		>=media-libs/libmtp-1.1.15 )
 	samba? ( >=net-fs/samba-4[client] )
 	archive? ( app-arch/libarchive:= )
