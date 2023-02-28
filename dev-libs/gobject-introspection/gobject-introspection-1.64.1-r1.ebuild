@@ -2,7 +2,7 @@
 
 EAPI="7"
 
-PYTHON_COMPAT=( python{3_8,3_9,3_10,3_11} )
+PYTHON_COMPAT=( python{3_9,3_10,3_11} )
 PYTHON_REQ_USE="xml(+)"
 
 inherit gnome.org meson python-single-r1 toolchain-funcs xdg
