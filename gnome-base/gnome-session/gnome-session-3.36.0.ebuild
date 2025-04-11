@@ -73,19 +73,19 @@ src_prepare() {
 
 	if use gconf; then
 		# From GNOME:
-		# 	https://gitlab.gnome.org/GNOME/gnome-session/commit/926c3fce17d9665047412046a7298fad55934b2d
+		# 	https://gitlab.gnome.org/GNOME/gnome-session/-/commit/926c3fce17d9665047412046a7298fad55934b2d
 		eapply "${FILESDIR}"/${PN}-3.28.1-support-gconf.patch
 	fi
 
 	# From GNOME:
-	# 	https://gitlab.gnome.org/GNOME/gnome-session/commit/d8b8665dae18700cc4caae5e857b1c23a005a62e
+	# 	https://gitlab.gnome.org/GNOME/gnome-session/-/commit/d8b8665dae18700cc4caae5e857b1c23a005a62e
 	eapply "${FILESDIR}"/${PN}-3.28.1-support-old-upower.patch
 
 	eapply "${FILESDIR}"/${PN}-3.34.0-support-elogind.patch
 
 	# From GNOME:
-	# 	https://gitlab.gnome.org/GNOME/gnome-session/commit/646b9bc0584d02033ab9600c39b77d6f99bfc4a6
-	# 	https://gitlab.gnome.org/GNOME/gnome-session/commit/60e619b8a2cacc7b844fe6f0e206c895de68f890
+	# 	https://gitlab.gnome.org/GNOME/gnome-session/-/commit/646b9bc0584d02033ab9600c39b77d6f99bfc4a6
+	# 	https://gitlab.gnome.org/GNOME/gnome-session/-/commit/60e619b8a2cacc7b844fe6f0e206c895de68f890
 	eapply "${FILESDIR}"/${PN}-3.34.2-whitelist-xdg-session-id.patch
 
 	xdg_src_prepare

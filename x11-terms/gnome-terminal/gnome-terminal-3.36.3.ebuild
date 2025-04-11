@@ -5,8 +5,8 @@ GNOME2_LA_PUNT="yes"
 
 inherit autotools gnome2 readme.gentoo-r1
 
-DESCRIPTION="The Gnome Terminal"
-HOMEPAGE="https://wiki.gnome.org/Apps/Terminal/"
+DESCRIPTION="A terminal emulator for GNOME"
+HOMEPAGE="https://wiki.gnome.org/Apps/Terminal/ https://gitlab.gnome.org/GNOME/gnome-terminal"
 
 LICENSE="GPL-3+"
 SLOT="0"
@@ -48,9 +48,9 @@ src_prepare() {
 	fi
 
 	# From GNOME:
-	# 	https://gitlab.gnome.org/GNOME/gnome-terminal/commit/dcd77201aade51bab925b8257d79766ca7acd714
-	# 	https://gitlab.gnome.org/GNOME/gnome-terminal/commit/5ecb0ac8b0cf97c73b4b18ba74e5a220b420d942
-	# 	https://gitlab.gnome.org/GNOME/gnome-terminal/commit/57ea15c4bdf15247f1d403aa24fb18efe23cd8a7
+	# 	https://gitlab.gnome.org/GNOME/gnome-terminal/-/commit/dcd77201aade51bab925b8257d79766ca7acd714
+	# 	https://gitlab.gnome.org/GNOME/gnome-terminal/-/commit/5ecb0ac8b0cf97c73b4b18ba74e5a220b420d942
+	# 	https://gitlab.gnome.org/GNOME/gnome-terminal/-/commit/57ea15c4bdf15247f1d403aa24fb18efe23cd8a7
 	eapply "${FILESDIR}"/${PN}-3.36.2-revert-screen-take-a-ref-to-the-fd-list.patch
 
 	if use deprecated-transparency; then
@@ -60,7 +60,7 @@ src_prepare() {
 		eapply "${FILESDIR}"/${PN}-3.36.1.1-transparency.patch
 
 		# From GNOME:
-		# 	https://gitlab.gnome.org/GNOME/gnome-terminal/commit/b3c270b3612acd45f309521cf1167e1abd561c09
+		# 	https://gitlab.gnome.org/GNOME/gnome-terminal/-/commit/b3c270b3612acd45f309521cf1167e1abd561c09
 		eapply "${FILESDIR}"/${PN}-3.14.3-fix-broken-transparency-on-startup.patch
 
 		if ! use vanilla-notify; then

@@ -57,7 +57,7 @@ BDEPEND="
 	app-text/docbook-xml-dtd:4.3
 	dev-libs/appstream-glib
 	dev-util/gdbus-codegen
-	>=dev-util/gtk-doc-am-1.13
+	>=dev-build/gtk-doc-am-1.13
 	dev-util/itstool
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig

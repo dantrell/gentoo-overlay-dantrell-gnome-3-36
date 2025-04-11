@@ -70,7 +70,7 @@ RDEPEND="
 		|| ( sys-auth/elogind sys-apps/systemd )
 		>=dev-libs/libgudev-232:=
 		>=virtual/libudev-136:=
-		x11-base/xorg-server[wayland]
+		x11-base/xwayland
 		x11-libs/libdrm:=
 	)
 "
@@ -84,7 +84,7 @@ DEPEND="${RDEPEND}
 
 src_prepare() {
 	# From GNOME:
-	# 	https://gitlab.gnome.org/GNOME/mutter/commit/d3dc7d6f493f820a67c9c40a50ebc544a0d50331
+	# 	https://gitlab.gnome.org/GNOME/mutter/-/commit/d3dc7d6f493f820a67c9c40a50ebc544a0d50331
 	eapply "${FILESDIR}"/${PN}-3.32.0-support-eudev.patch
 
 	if use deprecated-background; then
@@ -92,18 +92,18 @@ src_prepare() {
 	fi
 
 	# From GNOME:
-	# 	https://gitlab.gnome.org/GNOME/mutter/merge_requests/89
+	# 	https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/89
 	if ! use vanilla-mipmapping; then
 		eapply "${FILESDIR}"/${PN}-3.32.0-metashapedtexture-disable-mipmapping-emulation.patch
 	fi
 
 	# From GNOME:
-	# 	https://gitlab.gnome.org/GNOME/mutter/commit/5201d77b0bcc3d790f13bbdfb8e6cd08e53eec83
+	# 	https://gitlab.gnome.org/GNOME/mutter/-/commit/5201d77b0bcc3d790f13bbdfb8e6cd08e53eec83
 	eapply "${FILESDIR}"/${PN}-3.37.2-keybindings-use-current-monitor-for-move-to-center.patch
 
 	# From GNOME:
-	# 	https://gitlab.gnome.org/GNOME/mutter/commit/033f0d11bfd87f82cbd3ffc56b97574bb3ffb691
-	# 	https://gitlab.gnome.org/GNOME/mutter/commit/64ced1632e277e4fc0b1f4de3f5bf229c6cf885b
+	# 	https://gitlab.gnome.org/GNOME/mutter/-/commit/033f0d11bfd87f82cbd3ffc56b97574bb3ffb691
+	# 	https://gitlab.gnome.org/GNOME/mutter/-/commit/64ced1632e277e4fc0b1f4de3f5bf229c6cf885b
 	eapply "${FILESDIR}"/${PN}-3.37.2-window-set-fall-back-tile-monitor-if-not-set.patch
 	eapply "${FILESDIR}"/${PN}-3.38.2-window-dont-override-tile-monitor.patch
 

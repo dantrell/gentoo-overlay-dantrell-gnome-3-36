@@ -31,7 +31,7 @@ BDEPEND="
 "
 
 PATCHES=(
-	"${FILESDIR}"/${PN}-3.36.0-drop-unnecessary-files.patch # https://gitlab.gnome.org/GNOME/gnome-nibbles/merge_requests/11
+	"${FILESDIR}"/${PN}-3.36.0-drop-unnecessary-files.patch # https://gitlab.gnome.org/GNOME/gnome-nibbles/-/merge_requests/11
 )
 
 src_prepare() {
